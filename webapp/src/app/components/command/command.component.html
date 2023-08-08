@@ -1,0 +1,26 @@
+<form (ngSubmit)="executeCommand()">
+    <!-- TODO: Add a threadID select to change the active thread -->
+    <mat-form-field>
+        <input matInput placeholder="Thread Id" [(ngModel)]="threadID" name="threadID" [matAutocomplete]="threadAuto">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Enter command" [(ngModel)]="command" name="command" [matAutocomplete]="auto">
+    </mat-form-field>
+  
+    <button mat-raised-button color="primary" type="submit">Execute</button>
+    <div class="commandLine">
+      <p *ngFor="let output of outputHistory">{{ output }}</p>
+    </div>
+  </form>
+  
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let option of commandsHistory" [value]="option">
+      {{ option }}
+    </mat-option>
+  </mat-autocomplete>
+  
+  <mat-autocomplete #threadAuto="matAutocomplete">
+    <mat-option *ngFor="let thread of (threads$ | async)" [value]="thread">
+      {{ thread }}
+    </mat-option>
+  </mat-autocomplete>

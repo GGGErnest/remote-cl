@@ -1,0 +1,10 @@
+<mat-toolbar color="primary">
+  <span>{{title}}</span>
+  <span class="spacer"></span>
+  <a *ngIf="authService.isUserLoggedIn()" routerLink="/logout" routerLinkActive="active" ariaCurrentWhenActive="page">Logout</a>
+</mat-toolbar>
+
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+
