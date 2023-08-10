@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import {concatAll, map, } from 'rxjs/operators';
 import { WebSocketService } from './web-socket.service';
+import { environment } from '../../environments/environment';
 
 export interface Response {
    message: string;
@@ -17,7 +18,7 @@ export interface Request { success: boolean, token: string }
 })
 export class AuthService {
   private authTokenKey = 'auth_token';
-  private baseUrl = 'http://localhost:3000/';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private webSocket: WebSocketService) {
     this.isUserLoggedIn();
@@ -41,7 +42,7 @@ export class AuthService {
    }
 
   login(password:string) {
-    return this.http.post<Response>(this.baseUrl+'login',{password}).pipe(
+    return this.http.post<Response>(this.apiUrl+'login',{password}).pipe(
       map(response => {
         if (response.result) {
           localStorage.setItem(this.authTokenKey, response.token);
@@ -57,6 +58,6 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this.authTokenKey);
-    return this.http.post<Response>(this.baseUrl+'logout', {});
+    return this.http.post<Response>(this.apiUrl+'logout', {});
   }
 }
