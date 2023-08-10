@@ -40,7 +40,7 @@ registerCommandRoutes(app);
 registerThreadsRoutes(app);
 
 app.listen(settings.webServer.port, settings.webServer.host , () => {
-  console.log("Server is running on http://localhost:3000");
+  console.log(`Server is running on http://${settings.webServer.host}:${settings.webServer.port}`);
 
   startWS();
 });
