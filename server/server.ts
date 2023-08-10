@@ -7,16 +7,13 @@ import {startWS } from "./ws-server";
 import { registerAuthRoutes } from "./routes/authentication-routes";
 import { registerCommandRoutes } from "./routes/command-routes";
 import { registerThreadsRoutes } from "./routes/threads-routes";
+import { settings } from './state/settings';
 
 declare module "express-session" {
   export interface SessionData {
     token: string;
   }
 }
-
-const wsSettings = {
-port:3001,
-};
 
 const app = express();
 
@@ -42,7 +39,7 @@ registerAuthRoutes(app);
 registerCommandRoutes(app);
 registerThreadsRoutes(app);
 
-app.listen(3000, () => {
+app.listen(settings.webServer.port, settings.webServer.host , () => {
   console.log("Server is running on http://localhost:3000");
 
   startWS();
