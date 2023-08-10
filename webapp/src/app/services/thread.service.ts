@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { WebSocketService } from './web-socket.service';
 import { HistorySubject } from '../utils/history-subject';
 import { WSOutMessage } from '../types/ws-types';
+import { environment } from '../../environments/environment';
 
 function serializeMap<T,K>(map: Map<T,K>): string {
   return JSON.stringify([...map]);
@@ -69,7 +70,7 @@ export interface ThreadResponse {
   providedIn: 'root'
 })
 export class ThreadService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
   private shellsHandler = new ShellsHandler();
   private activeThreadOutput = new BehaviorSubject<string | string[]>([]); 
@@ -125,7 +126,7 @@ export class ThreadService {
   }
 
   getAllThreads(): Observable<any> {
-    return this.http.get<ThreadResponse>(`${this.apiUrl}/threads`).pipe(tap(response=> {
+    return this.http.get<ThreadResponse>(`${this.apiUrl}threads`).pipe(tap(response=> {
       if(response.result) {
         response.result.forEach((item)=> {this.shellsHandler.addShell(item)});
         this.updateThreadsAsync();
@@ -134,7 +135,7 @@ export class ThreadService {
   }
 
   deleteThread(threadID: string): Observable<any> {
-    return this.http.delete<ThreadResponse>(`${this.apiUrl}/threads/${threadID}`).pipe(tap(data=> {
+    return this.http.delete<ThreadResponse>(`${this.apiUrl}threads/${threadID}`).pipe(tap(data=> {
         if (data.result && data.result[0]) {
           const threadToDelete = data.result[0];
           this.shellsHandler.removeShell(data.result[0]);
@@ -150,6 +151,6 @@ export class ThreadService {
   }
 
   deleteAllThreads(): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/threads/all`);
+    return this.http.delete(`${this.apiUrl}threads/all`);
   }
 }

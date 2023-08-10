@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import { broadcast } from "../ws-server";
 import { checkAuth } from "./authentication-routes";
-import { spawn } from "child_process";
+import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { v4 as uuidv4 } from "uuid";
 import { shells } from "../state/shells";
 import { WSOutMessage } from "../types/ws-types";
+import {homedir} from "os";
 
+const HOME_DIR = homedir();
 
-function command(req: Request, res: Response){
+function command(req: Request, res: Response) {
     const command = req.body.command;
     let threadId = req.body.threadId as string;
   
@@ -28,7 +30,11 @@ function command(req: Request, res: Response){
       if (!threadId) {
         threadId = uuidv4();
       }
-      shells[threadId] = spawn("/bin/bash");
+      const spawnOptions: SpawnOptionsWithoutStdio = {
+        cwd: HOME_DIR,
+        shell:true,
+      };
+      shells[threadId] = spawn("/bin/bash",spawnOptions);
       newThread = true;
     }
   
