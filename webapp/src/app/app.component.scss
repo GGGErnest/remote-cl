@@ -1,0 +1,19 @@
+:host {
+    position: relative;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: calc(100% - 64px);
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}

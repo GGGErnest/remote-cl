@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ContentChild, AfterViewInit, AfterContentInit, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { CommandService } from '../../services/command.service';
 import { ThreadService } from '../../services/thread.service';
 import { tap } from 'rxjs';
@@ -8,26 +8,24 @@ import { tap } from 'rxjs';
   templateUrl: './command.component.html',
   styleUrls: ['./command.component.scss']
 })
-export class CommandComponent implements OnInit, OnDestroy {
-  threadID = '';
+export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
+  shellId = '';
+  newShellName = '';
+  showNewShellInput = false;
   commandsHistory:string[] = [];
   outputHistory:string[] = [];
   activeThread = '';
   command = '';
   threads$ =this.threadService.threads$;
+  @ViewChild('commandLineOutput') commandOutputDiv!:ElementRef<HTMLDivElement>;
 
   constructor(private commandService: CommandService, private threadService: ThreadService) {
-      this.threadService.activeThreadOutput$.subscribe(output=> {
-        if(Array.isArray(output)) {
-          this.outputHistory = output;
-        } else {
-          this.outputHistory = [...this.outputHistory, output];
-        }
-      });
-    }
+      
+  }
   
   executeCommand() {
-    this.commandService.executeCommand(this.command, this.threadID).subscribe(
+    const threadId =  this.showNewShellInput ? this.newShellName:this.shellId;
+    this.commandService.executeCommand(this.command, this.shellId).subscribe(
       response => {
         this.command = '';
       },
@@ -35,6 +33,10 @@ export class CommandComponent implements OnInit, OnDestroy {
         //TODO: Add error handling logic here
       }
     );
+  }
+
+  private scrollUp() {
+    setTimeout(()=> this.commandOutputDiv.nativeElement.scrollTop = this.commandOutputDiv.nativeElement.scrollHeight,0 );
   }
 
   ngOnInit(): void {
@@ -48,5 +50,30 @@ export class CommandComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    
+  }
+
+  changeSelectedShell(selectedValue:string){
+    if(selectedValue === 'New'){
+      this.showNewShellInput = true;
+      this.outputHistory = [];
+      this.shellId = '';
+    } else {
+      this.showNewShellInput = false;
+      this.threadService.setActiveThread(selectedValue);
+      this.shellId = selectedValue;
+    }
+
+  }
+
+  ngAfterViewInit(): void {
+    this.threadService.activeThreadOutput$.subscribe(output=> {
+      if(Array.isArray(output)) {
+        this.outputHistory = output;
+      } else {
+        this.outputHistory = [...this.outputHistory, output];
+      }
+      this.scrollUp();
+    });
   }
 }
