@@ -18,9 +18,7 @@ export class CommandService {
 
   constructor(private http: HttpClient, private threadService:ThreadService) { }
 
-  executeCommand(command: string, threadId?:string): Observable<any> {
-    return this.http.post<ExecuteCommandResponse>(this.apiUrl, { command, threadId }).pipe(tap(response=>{
-      this.threadService.updateThread(response.threadId, command);
-    }));
+  executeCommand(command: string, threadId:string): Observable<ExecuteCommandResponse> {
+    return this.http.post<ExecuteCommandResponse>(this.apiUrl, { command, threadId });
   }
 }

@@ -18,11 +18,11 @@ $warn-palette:    map.get($color-config, 'warn');
 :host {
     display: flex;
     flex-direction: column;
-    max-height: 100%;
+    height: 100%;
 }
 
 .commandLineOutput {
-    max-height: calc(100% - 100px);
+    max-height: calc(100% - 131px);
     overflow: auto;
     display: flex;
     flex-direction: column;
@@ -30,13 +30,16 @@ $warn-palette:    map.get($color-config, 'warn');
 }
 
 .header {
-    margin-top: 10px;
+    margin: 10px 0px 5px 0px;
     font-size: 18px;
+    height: 30px;
+    border-bottom: solid 1px rgba(100,100,100,0.15);
+    padding: 0px 10px;
 }
 
 .command-form {
-    border-top: solid 1px mat.get-color-from-palette($primary-palette, 500);
-    padding: 20px 10px 0px 10px;
+    border-bottom: solid 1px rgba(100,100,100,0.15);
+    padding: 10px;
     position: fixed;
     width: calc(100% - 20px);
     bottom: 0px;
@@ -47,7 +50,6 @@ $warn-palette:    map.get($color-config, 'warn');
     display: flex;
     flex-direction: row;
     flex-grow: 1;
-    align-items: baseline;
 }
 
 .flex-grow-1 {
@@ -56,4 +58,8 @@ $warn-palette:    map.get($color-config, 'warn');
 
 mat-form-field {
     margin-right: 10px;
+}
+
+form button {
+    height: 56px;
 }

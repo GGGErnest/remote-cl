@@ -5,59 +5,52 @@ import { WebSocketService } from './web-socket.service';
 import { HistorySubject } from '../utils/history-subject';
 import { WSOutMessage } from '../types/ws-types';
 import { environment } from '../../environments/environment';
-
-function serializeMap<T,K>(map: Map<T,K>): string {
-  return JSON.stringify([...map]);
-}
-
-function deserializeMap<T,K>(serializedMap: string): Map<T,K> {
-  return new Map(JSON.parse(serializedMap));
-}
+import { serializeMap, deserializeMap } from '../utils/serializers';
 
 
 class ShellsHandler {
-  private localStorageCommandsKey = 'commandsHistory';
-  private commandsHistory = new Map<string, string[]>();
+  private localStorageCommandsKey = 'outputHistory';
+  private shellHistory = new Map<string, string[]>();
 
   constructor() {
     const commandsHistory = localStorage.getItem(this.localStorageCommandsKey);
     if(commandsHistory) {
-      this.commandsHistory = deserializeMap(commandsHistory);
+      this.shellHistory = deserializeMap(commandsHistory);
     }
    }
 
    public addOutPut(threadID:string, item:string) {
-    const commandHistory = this.commandsHistory.get(threadID);
+    const commandHistory = this.shellHistory.get(threadID);
     if(commandHistory) {
       commandHistory.push(item);
-      localStorage.setItem(this.localStorageCommandsKey, serializeMap(this.commandsHistory));
+      localStorage.setItem(this.localStorageCommandsKey, serializeMap(this.shellHistory));
       return;
     }
 
-    this.commandsHistory.set(threadID,[]);
+    this.shellHistory.set(threadID,[item]);
   }
 
   public addShell(threadID:string) {
-    if(this.commandsHistory.has(threadID)) {
+    if(this.shellHistory.has(threadID)) {
       return;
     }
 
-    this.commandsHistory.set(threadID,[]);
+    this.shellHistory.set(threadID,[]);
   }
 
   public getOutputs(threadID:string): string[] | undefined {
-    return this.commandsHistory.get(threadID);
+    return this.shellHistory.get(threadID);
   }
   public getShellsID() : string[] | undefined {
-    return Array.from(this.commandsHistory.keys());
+    return Array.from(this.shellHistory.keys());
   }
 
   public hasShell(shellID: string) {
-    return this.commandsHistory.has(shellID);
+    return this.shellHistory.has(shellID);
   }
 
   public removeShell(shellID:string) {
-    return this.commandsHistory.delete(shellID);
+    return this.shellHistory.delete(shellID);
   }
 }
 
@@ -73,7 +66,7 @@ export class ThreadService {
   private apiUrl = environment.apiUrl;
 
   private shellsHandler = new ShellsHandler();
-  private activeThreadOutput = new BehaviorSubject<string | string[]>([]); 
+  private activeThreadOutput = new BehaviorSubject<string>(''); 
   private activeThread = new HistorySubject<string>('');
   private threads = new BehaviorSubject<string[]>([]);
 
@@ -98,11 +91,9 @@ export class ThreadService {
     this.threads.next(this.shellsHandler.getShellsID() ?? []);
    }
 
-  public setActiveThread(threadID:string) {
-    if(this.shellsHandler.hasShell(threadID)) {
+  public setActiveThread(threadID:string ) {
+    if(this.shellsHandler.hasShell(threadID) && this.activeThread.value !== threadID) {
         this.activeThread.next(threadID);
-        const shellOutputs = this.shellsHandler.getOutputs(this.activeThread.value) ?? [];
-        this.activeThreadOutput.next(shellOutputs);
     }
   }
 
@@ -112,17 +103,16 @@ export class ThreadService {
   }
 
   public updateThread(threadID:string, command:string) {
-    if(this.shellsHandler.hasShell(threadID)) {
+    const isNewShell = !this.shellsHandler.hasShell(threadID);
      this.shellsHandler.addOutPut(threadID,command);
+     if(isNewShell){
+      this.updateThreadsAsync();
+     }
      this.activeThreadOutput.next(command);
-      return
-    }
-
-    this.shellsHandler.addShell(threadID);
   }
 
-  getOutputs(threadId:string){
-    return this.shellsHandler.getOutputs(threadId);
+  getOutputs(threadId:string):string[] {
+    return Array.from(this.shellsHandler.getOutputs(threadId) ?? []);
   }
 
   getAllThreads(): Observable<any> {

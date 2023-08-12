@@ -45,7 +45,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
     MatSelectModule,
   ],
   providers: [
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline', subscriptSizing:'dynamic'}},
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
      AuthService,
      CommandService,
