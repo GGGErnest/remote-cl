@@ -67,7 +67,7 @@ export class ThreadService {
 
   private shellsHandler = new ShellsHandler();
   private activeThreadOutput = new BehaviorSubject<string>(''); 
-  private activeThread = new HistorySubject<string>('');
+  private activeThread = new HistorySubject<string | undefined>(undefined);
   private threads = new BehaviorSubject<string[]>([]);
 
   public threads$ = this.threads.asObservable();
@@ -80,8 +80,10 @@ export class ThreadService {
       console.log("Out Message received");
       if(message.type === 'Output') {
         const outputMessage = message as WSOutMessage;
-        if(outputMessage.output){
-         this.updateThread(outputMessage.threadId, outputMessage.output);
+        const output = outputMessage.output?? outputMessage?.shellError ?? outputMessage.serverError;
+
+        if(output){
+        this.updateThread(outputMessage.threadId, output);
         }
       }
     });
@@ -91,7 +93,12 @@ export class ThreadService {
     this.threads.next(this.shellsHandler.getShellsID() ?? []);
    }
 
-  public setActiveThread(threadID:string ) {
+  public setActiveThread(threadID:string | undefined ) {
+    if(!threadID) {
+      this.activeThread.next(threadID);
+      return;
+    }
+
     if(this.shellsHandler.hasShell(threadID) && this.activeThread.value !== threadID) {
         this.activeThread.next(threadID);
     }
@@ -125,14 +132,14 @@ export class ThreadService {
   }
 
   deleteThread(threadID: string): Observable<any> {
-    return this.http.delete<ThreadResponse>(`${this.apiUrl}threads/${threadID}`).pipe(tap(data=> {
+    return this.http.delete<ThreadResponse>(`${this.apiUrl}thread/${threadID}`).pipe(tap(data=> {
         if (data.result && data.result[0]) {
           const threadToDelete = data.result[0];
           this.shellsHandler.removeShell(data.result[0]);
           this.updateThreadsAsync();
           // in case we delete the active thread we should set as active the one that was active before
           if(this.activeThread.value === threadToDelete) {
-            const activeThreadHistory =this.activeThread.getHistory();
+            const activeThreadHistory = this.activeThread.getHistory();
             const previousActiveThread = activeThreadHistory[activeThreadHistory.length-2];
             this.setActiveThread(previousActiveThread);
           }

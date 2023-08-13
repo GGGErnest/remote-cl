@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { checkAuth } from "./authentication-routes";
 import { shells } from "../state/shells";
 
-function threads(req: Request, res: Response){
+function threads(req: Request, res: Response) {
    // Return a list of all running threadIds
+   console.log('listing Shells ', Object.keys(shells));
    res.status(200).json({ message: "All threads", result: Object.keys(shells) });
   }
 
@@ -20,6 +21,7 @@ function threadsDelete(req: Request, res: Response) {
     } else if (shells[threadId]) {
       shells[threadId].kill();
       delete shells[threadId];
+      console.log('Delete Shells ', Object.keys(shells));
       res
         .status(200)
         .json({ message: `Thread ${threadId} terminated`, result: [threadId] });
@@ -33,7 +35,7 @@ export function registerThreadsRoutes(app: any) {
     // app.use("/thread/:threadId", checkAuth);
 
     app.get("/threads", threads);
-    app.post("/thread/:threadId", threadsDelete);
+    app.delete("/thread/:threadId", threadsDelete);
 
   }
   

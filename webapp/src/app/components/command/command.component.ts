@@ -64,13 +64,11 @@ class CommandHistoryHandler {
   styleUrls: ['./command.component.scss'],
 })
 export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
-  selectedShell = '';
+  selectedShell? = '';
   newShellName = '';
-  showNewShellInput = false;
   commandsHistoryHandler = new CommandHistoryHandler();
   outputHistory: string[] = [];
   commandHistory: string[] = [];
-  activeThread = '';
   command = '';
   threads$ = this.threadService.threads$;
   @ViewChild('commandLineOutput') commandOutputDiv!: ElementRef<HTMLDivElement>;
@@ -81,9 +79,7 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   executeCommand() {
-    const shellId = this.showNewShellInput
-      ? this.newShellName
-      : this.selectedShell;
+    const shellId = this.selectedShell ?? this.newShellName;
     this.commandService.executeCommand(this.command, shellId).subscribe({
       next: (response) => {
         // Set as active shell the newly added shell
@@ -98,9 +94,16 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
           response.threadId
         );
         this.command = '';
-        this.showNewShellInput = false;
       },
     });
+  }
+
+  removeSelectedShell(event: Event) {
+    if(this.selectedShell){
+      this.threadService.deleteThread(this.selectedShell).subscribe();
+    }
+    
+    event.stopImmediatePropagation();
   }
 
   private scrollUp() {
@@ -115,11 +118,16 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.threadService.activeThread$.subscribe({
       next: (shellId) => {
-        this.selectedShell = shellId;3
-        this.commandHistory = this.commandsHistoryHandler.getCommands(
-          this.selectedShell
-        );
-       this.outputHistory = this.threadService.getOutputs(this.selectedShell);
+        this.selectedShell = shellId;
+        if(this.selectedShell){
+          this.commandHistory = this.commandsHistoryHandler.getCommands(
+            this.selectedShell
+          );
+         this.outputHistory = this.threadService.getOutputs(this.selectedShell);
+        } else {
+          this.commandHistory = [];
+          this.outputHistory = [];
+        }
       },
     });
 
@@ -129,15 +137,7 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {}
 
   changeSelectedShell(selectedValue: string | undefined) {
-    if (selectedValue) {
-      this.showNewShellInput = false;
       this.threadService.setActiveThread(selectedValue);
-    } else {
-      this.showNewShellInput = true;
-      this.outputHistory = [];
-      this.selectedShell = '';
-      this.commandHistory = [];
-    }
   }
 
   ngAfterViewInit(): void {

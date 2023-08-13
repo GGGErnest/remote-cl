@@ -6,15 +6,19 @@
 <form (ngSubmit)="executeCommand()" class="mat">
     <!-- TODO: Add a threadID select to change the active thread -->
     <mat-form-field>
-      <mat-label>Select an Terminal</mat-label>
+      <mat-label>New Shell</mat-label>
       <mat-select [value]="selectedShell" (valueChange)="changeSelectedShell($event)" name="selectedShell">
         <mat-option>New Shell</mat-option>
         <mat-option *ngFor="let thread of (threads$ | async)" [value]="thread">
           {{ thread }}
         </mat-option>
       </mat-select>
+      <button color="warn" type="button" *ngIf="selectedShell!== undefined" mat-icon-button matPrefix (click)="removeSelectedShell($event)" 
+        [attr.aria-label]="'Remove selected Shell'">
+        <mat-icon>delete</mat-icon>
+      </button>
     </mat-form-field>
-    <mat-form-field *ngIf="showNewShellInput" color="primary">
+    <mat-form-field *ngIf="!selectedShell" color="primary">
         <mat-label>Shell Name</mat-label>
         <input matInput [(ngModel)]="newShellName" name="newShellName">
     </mat-form-field>
