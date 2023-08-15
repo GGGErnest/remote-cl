@@ -20,7 +20,7 @@ export class CommandProcessor {
                     args,
                     password: match[3],
                     user: match[2],
-                    port:parseInt(match[5]),
+                    port: match[5] ? parseInt(match[5]) : 22,
                     server:match[4]
                 };
             return processedCommand;

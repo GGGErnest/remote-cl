@@ -10,5 +10,7 @@ export const settings = {
     wsServer: {
         host: WS_AND_W_SERVER_HOST,
         port: parseInt(process.env.WSServerPort ?? '3001'),
-    }
+    },
+    privateKey: process.env.privateKey,
+    passphrase: process.env.passphrase
 };

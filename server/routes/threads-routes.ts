@@ -4,8 +4,7 @@ import { shells } from "../state/shells";
 
 function threads(req: Request, res: Response) {
    // Return a list of all running threadIds
-   console.log('listing Shells ', Object.keys(shells));
-   res.status(200).json({ message: "All threads", result: Object.keys(shells) });
+   res.status(200).json({ message: "All threads", result: shells.getIds() });
   }
 
 function threadsDelete(req: Request, res: Response) {
@@ -13,15 +12,14 @@ function threadsDelete(req: Request, res: Response) {
   
     // Special case: if threadId is "all", terminate all threads
     if (threadId === "all") {
-      for (let threadId in shells) {
-        shells[threadId].kill();
-        delete shells[threadId];
+      const shellIds = shells.getIds();
+      for (let threadId in shellIds) {
+        shells.remove(threadId);
       }
       res.status(200).json({ message: "All threads terminated" });
-    } else if (shells[threadId]) {
-      shells[threadId].kill();
-      delete shells[threadId];
-      console.log('Delete Shells ', Object.keys(shells));
+    } else if (shells.get(threadId)) {
+      shells.remove(threadId);
+
       res
         .status(200)
         .json({ message: `Thread ${threadId} terminated`, result: [threadId] });

@@ -1,32 +1,44 @@
 import { ChildProcessWithoutNullStreams } from "child_process";
-import { Client } from 'ssh2';
+import { SSHShell } from "../logic/ssh-shell";
 
 export class ShellsStorage {
-    private shells: Record<string, [ChildProcessWithoutNullStreams, Client | undefined]> = {}; 
+    private shells: Record<string, SSHShell | ChildProcessWithoutNullStreams> = {}; 
 
     constructor(){
 
     }
 
-    public get(id:string): ChildProcessWithoutNullStreams | Client | undefined {
+    public add(shellId: string, shell: SSHShell | ChildProcessWithoutNullStreams){
+        this.shells[shellId]= shell;
+    }
+
+    public get(id:string): ChildProcessWithoutNullStreams | SSHShell | undefined {
        // returns the ssh client primarily if exist if not then returns the normal shell
-        return shells[id] ? shells[id][1]?? shells[id][0] : undefined;
+        return this.shells[id];
     }
 
-    public remove(id:string, allShells:boolean) {
-        if(allShells) {
-            // stopping first the ssh client if exist
-            this.shells[id][1]?.destroy();
-            this.shells[id][0].kill();
-            delete shells[id];
+    public remove(id:string) {
+        const shell = this.shells[id];
+        if(shell instanceof SSHShell){
+            shell.destroy();
+        } else {
+            shell.kill();
         }
+        delete this.shells[id];
+    }
+
+    public length(): number {
+        return Object.keys(shells).length;
+    }
+
+    public getIds() {
+        return Object.keys(this.shells);
+    }
+
+    public getShells() {
+        return Object.values(this.shells);
     }
 }
 
-export function writeCommand(shell: ChildProcessWithoutNullStreams | Client, command: string) {
-    if(shell instanceof Client) {
-        shell.shell()
-    }
-}
 
 export const shells = new ShellsStorage(); 
