@@ -11,3 +11,7 @@ export interface SSHCommand extends Command {
     user?: string;
     password?:string;
 }
+
+export function isSSHCommand(command: Command): command is SSHCommand {
+    return 'port' in command;
+}

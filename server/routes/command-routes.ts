@@ -7,7 +7,7 @@ import { shells } from "../state/shells";
 import { WSOutMessage } from "../types/ws-types";
 import { homedir } from "os";
 import { CommandProcessor } from "../logic/command-processor";
-import { SSHCommand } from "../types/command-types";
+import { Command, SSHCommand, isSSHCommand } from "../types/command-types";
 import {
   Client,
   ConnectConfig,
@@ -23,71 +23,26 @@ import { SSHShell } from "../logic/ssh-shell";
 const HOME_DIR = homedir();
 const commandProcessor = new CommandProcessor();
 
-function createSSHShell(shellId: string, command: SSHCommand) {
-  const connectionConf:ConnectConfig = {
-    host:command.server,
-    username:command.user,
-    password: command.password,
-    port:command.port ?? 22
-  };
+function createSSHShell(shellId: string, command: Command) {
+  let connectionConf:ConnectConfig;
+
+  if(isSSHCommand(command)) {
+    connectionConf = {
+      host:command.server,
+      username:command.user,
+      password: command.password,
+      port:command.port ?? 22
+    };
+  } else {
+    connectionConf = {
+      host: settings.ssh.host,
+      username:settings.ssh.username,
+      password: settings.ssh.password,
+      port:settings.ssh.port
+    };
+  }
   const shell = new SSHShell(shellId,connectionConf);
   shells.add(shellId, shell);
-}
-
-function startChildProcess(shellId: string, command: string) {
-  const spawnOptions: SpawnOptionsWithoutStdio = {
-    cwd: HOME_DIR,
-    shell: true,
-  };
-
-  let shell = spawn("/bin/bash", spawnOptions);
-  shells.add(shellId, shell);
-
-  // writing the command
-  shell.stdin.write(command + "\n");
-
-  console.log("is New thread");
-
-  // TODO: the outputs need to be stored in the sever too so the can be recover if the webapp disconnects
-  shell.stdout.on("data", (data) => {
-    const output = data.toString();
-    console.log("Data received from shell " + shellId + " ", output);
-    const message: WSOutMessage = { type: "Output", threadId: shellId, output };
-    broadcast(message);
-  });
-
-  shell.stderr.on("data", (data) => {
-    const shellError = data.toString();
-    console.log("Error received from shell " + shellId + " ", shellError);
-    const message: WSOutMessage = {
-      type: "Output",
-      threadId: shellId,
-      shellError,
-    };
-    broadcast(message);
-  });
-
-  shell.on("error", (error) => {
-    const serverError = error.message;
-    console.log("Server error in shell " + shellId + " ", serverError);
-    const message: WSOutMessage = {
-      type: "Output",
-      threadId: shellId,
-      serverError,
-    };
-    broadcast(message);
-  });
-
-  shell.on("close", (errorCode) => {
-    const exitMessage = `The process exited with code ${errorCode}`;
-    console.log(exitMessage);
-    const message: WSOutMessage = {
-      type: "Output",
-      threadId: shellId,
-      output: exitMessage,
-    };
-    broadcast(message);
-  });
 }
 
 function command(req: Request, res: Response) {
@@ -104,13 +59,7 @@ function command(req: Request, res: Response) {
   let shell = shells.get(shellId);
 
   if (shell) {
-    if (shell instanceof SSHShell) {
-      console.log(" Writing into the ssh")
-      shell.write(rawCommand);
-    } else {
-      shell.stdin.write(rawCommand + "\n");
-    }
-
+    shell.write(rawCommand);
     res.status(200).json({
       message: "Command executed",
       threadId: shellId,
@@ -134,12 +83,7 @@ function command(req: Request, res: Response) {
     shellId = uuidv4();
   }
 
-  if (command.base === "ssh") {
-    createSSHShell(shellId, command as SSHCommand);
-    return;
-  }
-
-  startChildProcess(shellId, rawCommand);
+  createSSHShell(shellId, command);
 }
 
 export function registerCommandRoutes(app: any) {
