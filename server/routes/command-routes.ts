@@ -41,6 +41,7 @@ function createSSHShell(shellId: string, command: Command) {
       port:settings.ssh.port
     };
   }
+  console.log('Connection info ', connectionConf);
   const shell = new SSHShell(shellId,connectionConf);
   shells.add(shellId, shell);
 }

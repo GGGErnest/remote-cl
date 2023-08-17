@@ -8,11 +8,12 @@ import {
   TemplateRef,
   ViewChild,
   ElementRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { CommandService } from '../../services/command.service';
 import { ThreadService } from '../../services/thread.service';
-import { tap } from 'rxjs';
 import { deserializeMap, serializeMap } from '../../utils/serializers';
+import { NgTerminal } from 'ng-terminal';
 class CommandHistoryHandler {
   private localStorageKey = 'commandHistory';
   private commandsHistory = new Map<string, string[]>();
@@ -71,7 +72,7 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
   commandHistory: string[] = [];
   command = '';
   threads$ = this.threadService.threads$;
-  @ViewChild('commandLineOutput') commandOutputDiv!: ElementRef<HTMLDivElement>;
+  @ViewChild('term',{ static: true }) term!: NgTerminal;
 
   constructor(
     private commandService: CommandService,
@@ -106,13 +107,11 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
     event.stopImmediatePropagation();
   }
 
-  private scrollUp() {
-    setTimeout(
-      () =>
-        (this.commandOutputDiv.nativeElement.scrollTop =
-          this.commandOutputDiv.nativeElement.scrollHeight),
-      0
-    );
+  private restoreTerminal() {
+    this.term.underlying?.clear();
+    this.outputHistory.forEach(command => {
+        this.term?.write(command);
+    });
   }
 
   ngOnInit(): void {
@@ -124,6 +123,7 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
             this.selectedShell
           );
          this.outputHistory = this.threadService.getOutputs(this.selectedShell);
+         this.restoreTerminal()
         } else {
           this.commandHistory = [];
           this.outputHistory = [];
@@ -132,6 +132,7 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.threadService.getAllThreads().subscribe();
+
   }
 
   ngOnDestroy(): void {}
@@ -140,10 +141,31 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
       this.threadService.setActiveThread(selectedValue);
   }
 
+  onTerminalKey(event:Event ): void {
+    console.log('keyboard event:' + event.keyCode + ', ' + event.key);
+
+      const printable = !event.altKey && !event.ctrlKey && !event.metaKey;
+
+      if (event.keyCode === 13) {
+        this.term.write('\r\n$ ');
+      } else if (event.keyCode === 8) {
+        // Do not delete the prompt
+        if ((this.term.underlying?.buffer as any).cursorX > 2) {
+          this.term.write('\b \b');
+        }
+      } else if (printable) {
+        this.term.write(event.key);
+      }
+  }
+
+  private initTerminal() {
+    
+  }
+
   ngAfterViewInit(): void {
     this.threadService.activeThreadOutput$.subscribe((output) => {
-      this.outputHistory = [...this.outputHistory, output];
-      this.scrollUp();
+      this.term?.write(output);
     });
+    this.initTerminal()
   }
 }

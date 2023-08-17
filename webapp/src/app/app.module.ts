@@ -24,6 +24,7 @@ import { AuthInterceptor } from './services/interceptors/auth-interceptor';
 import { ThreadService } from './services/thread.service';
 import { WebSocketService } from './services/web-socket.service';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { NgTerminalModule } from 'ng-terminal';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
     MatButtonModule,
     MatAutocompleteModule,
     MatSelectModule,
-    MatIconModule
+    MatIconModule,
+    NgTerminalModule
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline', subscriptSizing:'dynamic'}},
