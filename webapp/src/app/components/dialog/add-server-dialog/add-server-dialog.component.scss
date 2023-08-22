@@ -1,0 +1,20 @@
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.connection-data {
+    display: flex;
+    flex-direction: column;
+}
+
+
+mat-form-field {
+    margin: 10px;
+    width: 300px;
+    height: 48px;
+}
+
+.connection-data .description {
+    width: 400px;
+}

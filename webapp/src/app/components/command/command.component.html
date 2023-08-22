@@ -1,2 +1,4 @@
 <span class="header">Terminal {{selectedShell}}</span>
-<ng-terminal #term (keyEvent)="onTerminalKey($event)"></ng-terminal>
+<div class="terminal-container">
+    <ng-terminal #term (keyEvent)="onTerminalKey($event)"></ng-terminal>
+</div>

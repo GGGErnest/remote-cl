@@ -1,0 +1,24 @@
+{
+  "servers": [
+    {
+      "name": "Rasp",
+      "description": "short description",
+      "connectionSettings": {
+        "host": "",
+        "port": 22,
+        "username": "",
+        "password": ""
+      }
+    },
+    {
+      "name": "test",
+      "description": "asdf",
+      "connectionSettings": {
+        "host": "afdsfasd",
+        "port": 22,
+        "username": "asdf",
+        "password": "asdfasfd"
+      }
+    }
+  ]
+}

@@ -4,10 +4,12 @@ import { LoginComponent } from './components/login/login.component';
 import { CommandComponent } from './components/command/command.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import {canActivate} from './services/permission.service';
+import { ServersComponent } from './components/servers/servers.component';
 
 const routes: Routes = [
-  { path: 'logout', component: LogoutComponent, canActivate: [canActivate] },
+  { path: 'servers', component: ServersComponent, canActivate: [canActivate] },
   { path: 'command', component: CommandComponent, canActivate: [canActivate] },
+  { path: 'logout', component: LogoutComponent, canActivate: [canActivate] },
   { path: 'login', component: LoginComponent},
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];

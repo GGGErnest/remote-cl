@@ -1,8 +1,8 @@
 import { Client, ClientChannel, ConnectConfig, WriteStream } from "ssh2";
-import { Shell } from "../types/shell-types";
-import { WSOutMessage, WSPromptMessage } from "../types/ws-types";
-import { broadcast } from "../ws-server";
-import { shells } from "../state/shells";
+import { Shell } from "../types/shell-types.js";
+import { WSOutMessage, WSPromptMessage } from "../types/ws-types.js";
+import { broadcast } from "../ws-server.js";
+import { shellsStorage } from "../state/shells.js";
 
 class PromptsHandler {
     private unansweredPrompts: string [] = [];
@@ -109,7 +109,7 @@ export class SSHShell implements Shell {
           broadcast(message);
 
           this.connection.end();
-          shells.remove(this.shellId);
+          shellsStorage.remove(this.shellId);
         });
 
         stream.on("data", (data: string) => {
@@ -123,7 +123,7 @@ export class SSHShell implements Shell {
           broadcast(message);
         });
 
-        shells.add(this.shellId, this);
+        shellsStorage.add(this.shellId, this);
       });
     });
 

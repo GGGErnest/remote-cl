@@ -1,10 +1,11 @@
 {
-  "name": "express-angular-app",
+  "name": "remote-cl-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "ts-node server.ts"
+    "start": "ts-node --esm server.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,9 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "helmet": "^4.6.0",
+    "lodash":"^4.17.21",
+    "lodash-es": "^4.17.21",
+    "lowdb": "^6.0.1",
     "ssh2": "^1.14.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4",
@@ -28,7 +32,11 @@
     "ws": "^8.13.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.197",
+    "@types/lodash-es": "^4.17.8",
     "@types/uuid": "^9.0.2",
-    "@types/ws": "^8.5.5"
+    "@types/ws": "^8.5.5",
+    "i": "^0.3.7",
+    "npm": "^9.8.1"
   }
 }

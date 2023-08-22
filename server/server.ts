@@ -2,12 +2,14 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import session from "express-session";
-import {startWS } from "./ws-server";
+import {startWS } from "./ws-server.js";
 
-import { registerAuthRoutes } from "./routes/authentication-routes";
-import { registerCommandRoutes } from "./routes/command-routes";
-import { registerThreadsRoutes } from "./routes/threads-routes";
-import { settings } from './state/settings';
+import { registerAuthRoutes } from "./routes/authentication-routes.js";
+import { registerCommandRoutes } from "./routes/command-routes.js";
+import { registerShellsRoutes } from "./routes/shells-routes.js";
+import { settings } from './state/settings.js';
+import { initDB } from "./logic/database.js";
+import { registerServersRoutes } from "./routes/servers-routes.js";
 
 declare module "express-session" {
   export interface SessionData {
@@ -37,11 +39,15 @@ app.use(
 
 registerAuthRoutes(app);
 registerCommandRoutes(app);
-registerThreadsRoutes(app);
+registerShellsRoutes(app);
+registerServersRoutes(app);
 
 app.listen(settings.webServer.port, settings.webServer.host , () => {
+  
   console.log(`Server is running on http://${settings.webServer.host}:${settings.webServer.port}`);
-
+  
   startWS();
+  //initializing the DB
+  initDB()
 });
 

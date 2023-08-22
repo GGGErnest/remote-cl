@@ -54,7 +54,7 @@ class ShellsHandler {
   }
 }
 
-export interface ThreadResponse {
+export interface ShellResponse {
   message:string;
   result?:string[];
 }
@@ -62,16 +62,16 @@ export interface ThreadResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class ThreadService {
+export class ShellsService {
   private apiUrl = environment.apiUrl;
 
   private shellsHandler = new ShellsHandler();
   private activeThreadOutput = new BehaviorSubject<string>(''); 
-  private activeThread = new HistorySubject<string | undefined>(undefined);
-  private threads = new BehaviorSubject<string[]>([]);
+  private activeShell = new HistorySubject<string | undefined>(undefined);
+  private shells = new BehaviorSubject<string[]>([]);
 
-  public threads$ = this.threads.asObservable();
-  public activeThread$ = this.activeThread.asObservable();
+  public threads$ = this.shells.asObservable();
+  public activeThread$ = this.activeShell.asObservable();
   public activeThreadOutput$ = this.activeThreadOutput.asObservable();
 
 
@@ -90,17 +90,17 @@ export class ThreadService {
    }
 
    private updateThreadsAsync() {
-    this.threads.next(this.shellsHandler.getShellsID() ?? []);
+    this.shells.next(this.shellsHandler.getShellsID() ?? []);
    }
 
-  public setActiveThread(threadID:string | undefined ) {
+  public setActiveShell(threadID:string | undefined ) {
     if(!threadID) {
-      this.activeThread.next(threadID);
+      this.activeShell.next(threadID);
       return;
     }
 
-    if(this.shellsHandler.hasShell(threadID) && this.activeThread.value !== threadID) {
-        this.activeThread.next(threadID);
+    if(this.shellsHandler.hasShell(threadID) && this.activeShell.value !== threadID) {
+        this.activeShell.next(threadID);
     }
   }
 
@@ -123,7 +123,7 @@ export class ThreadService {
   }
 
   getAllThreads(): Observable<any> {
-    return this.http.get<ThreadResponse>(`${this.apiUrl}threads`).pipe(tap(response=> {
+    return this.http.get<ShellResponse>(`${this.apiUrl}threads`).pipe(tap(response=> {
       if(response.result) {
         response.result.forEach((item)=> {this.shellsHandler.addShell(item)});
         this.updateThreadsAsync();
@@ -132,16 +132,16 @@ export class ThreadService {
   }
 
   deleteThread(threadID: string): Observable<any> {
-    return this.http.delete<ThreadResponse>(`${this.apiUrl}thread/${threadID}`).pipe(tap(data=> {
+    return this.http.delete<ShellResponse>(`${this.apiUrl}thread/${threadID}`).pipe(tap(data=> {
         if (data.result && data.result[0]) {
           const threadToDelete = data.result[0];
           this.shellsHandler.removeShell(data.result[0]);
           this.updateThreadsAsync();
           // in case we delete the active thread we should set as active the one that was active before
-          if(this.activeThread.value === threadToDelete) {
-            const activeThreadHistory = this.activeThread.getHistory();
+          if(this.activeShell.value === threadToDelete) {
+            const activeThreadHistory = this.activeShell.getHistory();
             const previousActiveThread = activeThreadHistory[activeThreadHistory.length-2];
-            this.setActiveThread(previousActiveThread);
+            this.setActiveShell(previousActiveThread);
           }
         }
     }));

@@ -1,13 +1,13 @@
 import { Request, Response, raw } from "express";
-import { broadcast } from "../ws-server";
-import { checkAuth } from "./authentication-routes";
+import { broadcast } from "../ws-server.js";
+import { checkAuth } from "./authentication-routes.js";
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { v4 as uuidv4 } from "uuid";
-import { shells } from "../state/shells";
-import { WSOutMessage } from "../types/ws-types";
+import { shellsStorage } from "../state/shells.js";
+import { WSOutMessage } from "../types/ws-types.js";
 import { homedir } from "os";
-import { CommandProcessor } from "../logic/command-processor";
-import { Command, SSHCommand, isSSHCommand } from "../types/command-types";
+import { CommandProcessor } from "../logic/command-processor.js";
+import { Command, SSHCommand, isSSHCommand } from "../types/command-types.js";
 import {
   Client,
   ConnectConfig,
@@ -15,12 +15,9 @@ import {
   PasswordAuthMethod,
   PublicKeyAuthMethod,
 } from "ssh2";
-import { readFileSync } from "fs";
-import { settings } from "../state/settings";
-import {createInterface} from 'readline';
-import { SSHShell } from "../logic/ssh-shell";
+import { settings } from "../state/settings.js";
+import { SSHShell } from "../logic/ssh-shell.js";
 
-const HOME_DIR = homedir();
 const commandProcessor = new CommandProcessor();
 
 function createSSHShell(shellId: string, command: Command) {
@@ -43,7 +40,7 @@ function createSSHShell(shellId: string, command: Command) {
   }
   console.log('Connection info ', connectionConf);
   const shell = new SSHShell(shellId,connectionConf);
-  shells.add(shellId, shell);
+  shellsStorage.add(shellId, shell);
 }
 
 function command(req: Request, res: Response) {
@@ -57,7 +54,7 @@ function command(req: Request, res: Response) {
   //     return res.status(400).json({ message: 'Invalid command' });
   //   }
 
-  let shell = shells.get(shellId);
+  let shell = shellsStorage.get(shellId);
 
   if (shell) {
     shell.write(rawCommand);
@@ -70,7 +67,7 @@ function command(req: Request, res: Response) {
   }
 
   // Cap the number of concurrent shells at 10
-  if (shells.length() >= 10 && !shells.get(shellId)) {
+  if (shellsStorage.length() >= 10 && !shellsStorage.get(shellId)) {
     return res.status(503).json({ message: "Server busy" });
   }
 

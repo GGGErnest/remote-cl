@@ -1,24 +1,24 @@
 import { Request, Response } from "express";
-import { checkAuth } from "./authentication-routes";
-import { shells } from "../state/shells";
+import { checkAuth } from "./authentication-routes.js";
+import { shellsStorage } from "../state/shells.js";
 
-function threads(req: Request, res: Response) {
+function getShells(req: Request, res: Response) {
    // Return a list of all running threadIds
-   res.status(200).json({ message: "All threads", result: shells.getIds() });
+   res.status(200).json({ message: "All threads", result: shellsStorage.getIds() });
   }
 
-function threadsDelete(req: Request, res: Response) {
+function deleteShell(req: Request, res: Response) {
     const threadId = req.params.threadId;
   
     // Special case: if threadId is "all", terminate all threads
     if (threadId === "all") {
-      const shellIds = shells.getIds();
+      const shellIds = shellsStorage.getIds();
       for (let threadId in shellIds) {
-        shells.remove(threadId);
+        shellsStorage.remove(threadId);
       }
       res.status(200).json({ message: "All threads terminated" });
-    } else if (shells.get(threadId)) {
-      shells.remove(threadId);
+    } else if (shellsStorage.get(threadId)) {
+      shellsStorage.remove(threadId);
 
       res
         .status(200)
@@ -28,12 +28,12 @@ function threadsDelete(req: Request, res: Response) {
     }
 }
 
-export function registerThreadsRoutes(app: any) {
+export function registerShellsRoutes(app: any) {
     // app.use("/threads", checkAuth);
     // app.use("/thread/:threadId", checkAuth);
 
-    app.get("/threads", threads);
-    app.delete("/thread/:threadId", threadsDelete);
+    app.get("/threads", getShells);
+    app.delete("/thread/:threadId", deleteShell);
 
   }
   

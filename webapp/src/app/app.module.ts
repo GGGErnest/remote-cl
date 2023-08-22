@@ -21,17 +21,23 @@ import { PermissionsService } from './services/permission.service';
 import { CommandComponent } from './components/command/command.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { AuthInterceptor } from './services/interceptors/auth-interceptor';
-import { ThreadService } from './services/thread.service';
+import { ShellsService } from './services/shells.service';
 import { WebSocketService } from './services/web-socket.service';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 import { NgTerminalModule } from 'ng-terminal';
+import { ServersComponent } from './components/servers/servers.component';
+import { AddServerDialogComponent } from './components/dialog/add-server-dialog/add-server-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     CommandComponent,
-    LogoutComponent
+    LogoutComponent,
+    ServersComponent,
+    AddServerDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -46,14 +52,16 @@ import { NgTerminalModule } from 'ng-terminal';
     MatAutocompleteModule,
     MatSelectModule,
     MatIconModule,
-    NgTerminalModule
+    NgTerminalModule,
+    MatCardModule,
+    MatDialogModule,
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline', subscriptSizing:'dynamic'}},
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
      AuthService,
      CommandService,
-     ThreadService,
+     ShellsService,
      WebSocketService,
      PermissionsService,
     ],

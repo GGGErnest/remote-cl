@@ -1,14 +1,14 @@
 import { ChildProcessWithoutNullStreams } from "child_process";
-import { SSHShell } from "../logic/ssh-shell";
+import { SSHShell } from "../logic/ssh-shell.js";
 
 export class ShellsStorage {
     private shells: Record<string, SSHShell> = {}; 
 
-    constructor(){
+    constructor() {
 
     }
 
-    public add(shellId: string, shell: SSHShell){
+    public add(shellId: string, shell: SSHShell) {
         this.shells[shellId]= shell;
     }
 
@@ -24,7 +24,7 @@ export class ShellsStorage {
     }
 
     public length(): number {
-        return Object.keys(shells).length;
+        return Object.keys(shellsStorage).length;
     }
 
     public getIds() {
@@ -37,4 +37,4 @@ export class ShellsStorage {
 }
 
 
-export const shells = new ShellsStorage(); 
+export const shellsStorage = new ShellsStorage(); 

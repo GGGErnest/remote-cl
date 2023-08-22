@@ -1,4 +1,4 @@
-import { Command, SSHCommand } from "../types/command-types";
+import { Command, SSHCommand } from "../types/command-types.js";
 
 const sshRegex = new RegExp(/^ssh\s+((?:(\w+)@)?(?:(\w+):)?([\w\.-]+))(?:\s+-p\s+(\d+))?.*$/);
 

@@ -1,10 +1,10 @@
-import WebSocket, { Server } from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 import { WSMessage } from "./types/ws-types";
 
-export let wss: Server | undefined;
+export let wss: WebSocketServer | undefined;
 
 export function startWS(port = 3001) {
-  wss = new Server({ port });
+  wss = new WebSocketServer({ port });
 
   wss.on("connection", (ws: any) => {
     ws.on("message", (message: any) => {
