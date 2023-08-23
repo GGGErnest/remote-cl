@@ -56,8 +56,8 @@ export class ServersComponent implements OnInit {
     })
   }
 
-  public openShell(server:Server, shell: string) {
-
+  public openShell(shell: string) {
+    
   }
 
   public stopShell(server:Server, shell: string) {

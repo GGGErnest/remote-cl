@@ -17,16 +17,19 @@ export class ServersService {
   constructor(private http: HttpClient) {
 
   }
+  public getServer(name:string) {
+    return this.http.get<ServersResponse>(this.apiUrl + '/' + name);
+  }
 
-  public get() {
+  public getServers() {
     return this.http.get<ServersResponse>(this.apiUrl);
   }
 
-  public add(server:Server) {
+  public addServer(server:Server) {
     return this.http.post<ServersResponse>(this.apiUrl, server);
   }
 
-  public edit(name:string, server:Server) {
+  public editServer(name:string, server:Server) {
     return this.http.patch<ServersResponse>( this.apiUrl+"/"+ name, server);
   }
 }

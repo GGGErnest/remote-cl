@@ -93,14 +93,14 @@ export class ShellsService {
     this.shells.next(this.shellsHandler.getShellsID() ?? []);
    }
 
-  public setActiveShell(threadID:string | undefined ) {
-    if(!threadID) {
-      this.activeShell.next(threadID);
+  public setActiveShell(shellName:string | undefined ) {
+    if(!shellName) {
+      this.activeShell.next(shellName);
       return;
     }
 
-    if(this.shellsHandler.hasShell(threadID) && this.activeShell.value !== threadID) {
-        this.activeShell.next(threadID);
+    if(this.shellsHandler.hasShell(shellName) && this.activeShell.value !== shellName) {
+        this.activeShell.next(shellName);
     }
   }
 

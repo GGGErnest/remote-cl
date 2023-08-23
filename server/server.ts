@@ -19,10 +19,20 @@ declare module "express-session" {
 
 const app = express();
 
+const corsOptions = {
+  origin: '*', // replace [DOCKER_HOST_IP] with the actual IP
+  optionsSuccessStatus: 200
+}
+
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+
+app.all('/', function(req, res, next) {
+  console.log("We got a request")
+  next();
+ });
 
 app.use(
   session({
@@ -46,7 +56,7 @@ app.listen(settings.webServer.port, settings.webServer.host , () => {
   
   console.log(`Server is running on http://${settings.webServer.host}:${settings.webServer.port}`);
   
-  startWS();
+  startWS(settings.wsServer.host,settings.wsServer.port);
   //initializing the DB
   initDB()
 });

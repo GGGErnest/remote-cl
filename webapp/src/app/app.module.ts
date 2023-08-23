@@ -18,7 +18,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
 import { CommandService } from './services/command.service';
 import { PermissionsService } from './services/permission.service';
-import { CommandComponent } from './components/command/command.component';
+import { ShellComponent } from './components/shell/shell.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { AuthInterceptor } from './services/interceptors/auth-interceptor';
 import { ShellsService } from './services/shells.service';
@@ -29,15 +29,17 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { NgTerminalModule } from 'ng-terminal';
 import { ServersComponent } from './components/servers/servers.component';
 import { AddServerDialogComponent } from './components/dialog/add-server-dialog/add-server-dialog.component';
+import { ServerComponent } from './components/server/server.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    CommandComponent,
+    ShellComponent,
     LogoutComponent,
     ServersComponent,
-    AddServerDialogComponent
+    AddServerDialogComponent,
+    ServerComponent
   ],
   imports: [
     BrowserModule,

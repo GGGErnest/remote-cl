@@ -23,6 +23,8 @@ import { Unicode11Addon } from 'xterm-addon-unicode11';
 import { ImageAddon } from 'xterm-addon-image';
 import { SerializeAddon } from 'xterm-addon-serialize';
 import { AddonType, AddonWrapper, UsedAddons } from 'src/app/types/terminal-types';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 
 class CommandHistoryHandler {
@@ -71,11 +73,11 @@ class CommandHistoryHandler {
 }
 
 @Component({
-  selector: 'app-command',
-  templateUrl: './command.component.html',
-  styleUrls: ['./command.component.scss'],
+  selector: 'app-shell',
+  templateUrl: './shell.component.html',
+  styleUrls: ['./shell.component.scss'],
 })
-export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ShellComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedShell? = '';
   newShellName = '';
   commandsHistoryHandler = new CommandHistoryHandler();
@@ -89,7 +91,9 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private commandService: CommandService,
-    private threadService: ShellsService
+    private threadService: ShellsService,
+    private activatedRoute: ActivatedRoute,
+    private location: Location
   ) {}
 
   executeCommand() {
@@ -129,6 +133,14 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    
+    const shellName = this.activatedRoute.snapshot.paramMap.get('id');
+    if(shellName === null) {
+      this.location.back();
+    }
+
+    this.threadService.setActiveShell(shellName!);
+
     this.threadService.activeThread$.subscribe({
       next: (shellId) => {
         this.selectedShell = shellId;
@@ -144,9 +156,6 @@ export class CommandComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
     });
-
-    this.threadService.getAllThreads().subscribe();
-
   }
 
   ngOnDestroy(): void {}

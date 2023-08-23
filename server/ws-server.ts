@@ -3,8 +3,8 @@ import { WSMessage } from "./types/ws-types";
 
 export let wss: WebSocketServer | undefined;
 
-export function startWS(port = 3001) {
-  wss = new WebSocketServer({ port });
+export function startWS(host = 'localhost',port = 3001) {
+  wss = new WebSocketServer({ host,port });
 
   wss.on("connection", (ws: any) => {
     ws.on("message", (message: any) => {
@@ -21,7 +21,7 @@ export function startWS(port = 3001) {
     ws.send("Welcome to the WebSocket server");
   });
 
-  console.log("Websocket listening on localhost " + port);
+  console.log(`Websocket listening on ${host}:${port}`);
 }
 
 export function broadcast(data: WSMessage) {

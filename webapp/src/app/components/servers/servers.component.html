@@ -9,7 +9,7 @@
         <mat-card-content>
           <div *ngFor="let shell of server.runningShells" class="shell">
             <span>{{shell}}</span>
-            <button mat-button (click)="openShell(server, shell)">Open</button>
+            <button mat-button routerLink="/shell/{{shell}}">Open</button>
             <button mat-button (click)="stopShell(server, shell)">Stop</button>
           </div>
         </mat-card-content>
