@@ -30,6 +30,7 @@ import { NgTerminalModule } from 'ng-terminal';
 import { ServersComponent } from './components/servers/servers.component';
 import { AddServerDialogComponent } from './components/dialog/add-server-dialog/add-server-dialog.component';
 import { ServerComponent } from './components/server/server.component';
+import { ShellDialogComponent } from './components/dialog/shell-dialog/shell-dialog.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ServerComponent } from './components/server/server.component';
     LogoutComponent,
     ServersComponent,
     AddServerDialogComponent,
-    ServerComponent
+    ServerComponent,
+    ShellDialogComponent
   ],
   imports: [
     BrowserModule,

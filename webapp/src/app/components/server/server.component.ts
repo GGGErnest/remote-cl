@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { ServersService } from 'src/app/services/servers.service';
+import { ServersService, ServersResponse } from 'src/app/services/servers.service';
 import { Server } from 'src/app/types/server-types';
 
 @Component({
@@ -21,8 +21,8 @@ export class ServerComponent implements OnInit {
     this.localtion.back();
    }
    
-   this.serverService.getServer(serverId!).subscribe(response => {
-    if(response.result[0]){
+   this.serverService.getServer(serverId!).subscribe((response: ServersResponse ) => {
+    if(response.result[0]) {
       this.server = response.result[0];
     }
    });

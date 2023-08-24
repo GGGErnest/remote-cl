@@ -28,12 +28,22 @@ function deleteShell(req: Request, res: Response) {
     }
 }
 
+function getShellHistory(req: Request, res: Response) {
+  const shellData = shellsStorage.get(req.params.id);
+  if(shellData) {
+    return res.status(200).json({ message: "Shell history", result: shellData.getHistory() });
+  }
+
+  return res.status(400).json({message:'Shell not found', result:undefined});
+}
+
 export function registerShellsRoutes(app: any) {
     // app.use("/threads", checkAuth);
     // app.use("/thread/:threadId", checkAuth);
 
-    app.get("/threads", getShells);
-    app.delete("/thread/:threadId", deleteShell);
+    app.get("/shells", getShells);
+    app.get("/shells/:id/history", getShellHistory);
+    app.delete("/shells/:id", deleteShell);
 
   }
   

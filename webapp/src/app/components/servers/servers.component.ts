@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ServersService } from 'src/app/services/servers.service';
+import { ServersService, ServersResponse } from 'src/app/services/servers.service';
 import { ShellsService } from 'src/app/services/shells.service';
 import { Server } from 'src/app/types/server-types';
 import { AddServerDialogComponent } from '../dialog/add-server-dialog/add-server-dialog.component';
@@ -20,7 +20,7 @@ export class ServersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.serversService.get().subscribe((response)=> {
+    this.serversService.getServers().subscribe((response)=> {
       this.servers = response.result;
     })
   }
@@ -32,7 +32,7 @@ export class ServersComponent implements OnInit {
     this.serverDialog.afterClosed().subscribe(result=> {
       if(result) {
         // TODO: send some feedback to the user
-        this.serversService.add(result).subscribe(response=> {
+        this.serversService.addServer(result).subscribe((response: ServersResponse) => {
           this.servers = response.result;
         });
       }
@@ -49,7 +49,7 @@ export class ServersComponent implements OnInit {
     this.serverDialog.afterClosed().subscribe(result=> {
       if(result) {
         // TODO: send some feedback to the user
-        this.serversService.edit(currentName,result).subscribe(response=> {
+        this.serversService.editServer(currentName,result).subscribe((response: ServersResponse )=> {
           this.servers = response.result;
         });
       }

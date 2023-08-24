@@ -3,39 +3,57 @@ import { Shell } from "../types/shell-types.js";
 import { WSOutMessage, WSPromptMessage } from "../types/ws-types.js";
 import { broadcast } from "../ws-server.js";
 import { shellsStorage } from "../state/shells.js";
+import lodash from 'lodash';
 
-class PromptsHandler {
-    private unansweredPrompts: string [] = [];
-    private answers : string [] = [];
+interface ShellMessage {
+  count:number;
+  type: 'in' | 'out' | 'prompt';
+  message:string;
+}
+
+class ShellMessagesHandler {
+    private _messageCount = 0;
+    private _messages: ShellMessage[] = [];
     
     constructor(private finishCallback:(answers:string[])=> void){
 
     }
 
     public hasUnansweredPrompts(): boolean {
-        return this.unansweredPrompts.length> 0;
+        return this._messages[this._messageCount -1].type === 'prompt';
     }
 
-    public addPrompt(prompt : string) {
-        this.unansweredPrompts.push(prompt);
+    public addInMessage(message:string) {
+      this._messages.push({count:this._messageCount,message,type: 'in'});
+      this._messageCount+=1
     }
 
-    public addAnswer(answer:string){
-        this.answers.push(answer);
-        this.unansweredPrompts.splice(1, this.unansweredPrompts.length-1);
-        if(!this.hasUnansweredPrompts()) {
-            this.finishCallback(Array.from(this.answers));
-            this.unansweredPrompts = [];
-            this.answers = [];
-        }
+    public addPrompt(message : string) {
+      this._messages.push({count:this._messageCount,message, type: 'prompt'});
+      this._messageCount+=1;
     }
+
+    public addOutMessage(message:string) {
+      this._messages.push({count:this._messageCount,message,type: 'out'});
+      this._messageCount+=1
+    }
+
+    // public addAnswer(answer:string) {
+    //     this.answers.push(answer);
+    //     this.unansweredPrompts.splice(1, this.unansweredPrompts.length-1);
+    //     if(!this.hasUnansweredPrompts()) {
+    //         this.finishCallback(Array.from(this.answers));
+    //         this.unansweredPrompts = [];
+    //         this.answers = [];
+    //     }
+    // }
 }
 
 export class SSHShell implements Shell {
   private connection = new Client();
   private shellWriteStream?: ClientChannel;
   private passwordRequired = false;
-  private prompts = new PromptsHandler((answers:string[])=> this.onAllPromptsAnswered(answers));
+  private _messages = new ShellMessagesHandler((answers:string[])=> this.onAllPromptsAnswered(answers));
   private finishCallBack?: Function;
 
   constructor(
@@ -54,14 +72,18 @@ export class SSHShell implements Shell {
     }
 
     // command is an answer
-    if(this.prompts.hasUnansweredPrompts()) {
-        this.prompts.addAnswer(command);
+    if(this._messages.hasUnansweredPrompts()) {
+        this._messages.addInMessage(command);
         return;
     }
 
     if (this.shellWriteStream && this.shellWriteStream.writable) {
       this.shellWriteStream?.write(command + "\n");
     }
+  }
+
+  public getHistory() {
+    return lodash.cloneDeep(this._messages);
   }
 
   public destroy() {
@@ -96,6 +118,7 @@ export class SSHShell implements Shell {
             serverError,
           };
           broadcast(message);
+          this._messages.addOutMessage(serverError);
         }
 
         stream.on("close", () => {
@@ -121,6 +144,7 @@ export class SSHShell implements Shell {
             output,
           };
           broadcast(message);
+          this._messages.addOutMessage(output);
         });
 
         shellsStorage.add(this.shellId, this);
@@ -135,7 +159,7 @@ export class SSHShell implements Shell {
 
         if (prompts.length > 0) {
             prompts.forEach((prompt)=> {
-                this.prompts.addPrompt(prompt.prompt);
+                this._messages.addPrompt(prompt.prompt);
             })
         } else {
           finish([]);
