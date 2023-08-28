@@ -1,28 +1,33 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { WSMessage } from '../types/ws-types';
+import { WSInputMessage, WSMessage, WSState } from '../types/ws-types';
 import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
-  private isConnected = new BehaviorSubject<boolean>(false);
-  private socket?: WebSocket;
-  private messageReceived = new Subject<WSMessage>();
+  private _state = new BehaviorSubject<WSState>('Disconnected');
+  private _socket?: WebSocket;
+  private _messageReceived = new Subject<WSMessage>();
 
-  public messages = this.messageReceived.asObservable();
-  isConnected$ = this.isConnected.asObservable();
+  public messages = this._messageReceived.asObservable();
+  state$ = this._state.asObservable();
+
+  public get state():WSState {
+    return this._state.value;
+  }
 
   connect(): void {
-    if (!this.socket || this.socket.readyState !== this.socket.OPEN) {
-      this.socket = new WebSocket(environment.wsHost);
-      this.socket.addEventListener('open',() => {
+    if (!this._socket || this._socket.readyState !== this._socket.OPEN) {
+      this._state.next('Connecting');
+      this._socket = new WebSocket(environment.wsHost);
+      this._socket.addEventListener('open',() => {
         console.log("WebSocket Connected");
-        this.isConnected.next(true);
+        this._state.next('Connected');
      });
-     this.socket.addEventListener('message', (event) => {
+     this._socket.addEventListener('message', (event) => {
        
       console.log('Websocket Message', event);
       let message: any;
@@ -30,26 +35,30 @@ export class WebSocketService {
       // in case the data sent can't be parsed
       try {
         message = JSON.parse(event.data);
-        this.messageReceived.next(message);
+        this._messageReceived.next(message);
         console.log("WS -> Message Received: ", message);
       } catch (error){
         console.log('Message couldnt be parsed', event.data);
       }
 
     });
-    this.socket.addEventListener('error',(error) => {
+    this._socket.addEventListener('error',(error) => {
       console.error("WebSocket Error ", error);
     });
-    this.socket.addEventListener('close', () => {
-      this.isConnected.next(false);
+    this._socket.addEventListener('close', () => {
+      this._socket = undefined;
+      this._state.next('Disconnected');
     });
   }
 }
 
+public sendMessage(message: WSInputMessage) {
+  this._socket?.send(JSON.stringify(message));
+}
+
   disconnect(): void {
-    if (this.socket) {
-      this.socket.close();
-      this.socket = undefined;
+    if (this._socket) {
+      this._socket.close();
     }
   }
 }

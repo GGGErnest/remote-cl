@@ -3,8 +3,8 @@ import { broadcast } from "../ws-server.js";
 import { checkAuth } from "./authentication-routes.js";
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { v4 as uuidv4 } from "uuid";
-import { shellsStorage } from "../state/shells.js";
-import { WSOutMessage } from "../types/ws-types.js";
+import { terminalsStorage } from "../state/shells.js";
+import { WSOutputMessage } from "../types/ws-types.js";
 import { homedir } from "os";
 import { CommandProcessor } from "../logic/command-processor.js";
 import { Command, SSHCommand, isSSHCommand } from "../types/command-types.js";
@@ -40,7 +40,7 @@ function createSSHShell(shellId: string, command: Command) {
   }
   console.log('Connection info ', connectionConf);
   const shell = new SSHShell(shellId,connectionConf);
-  shellsStorage.add(shellId, shell);
+  terminalsStorage.add(shellId, shell);
 }
 
 function command(req: Request, res: Response) {
@@ -54,7 +54,7 @@ function command(req: Request, res: Response) {
   //     return res.status(400).json({ message: 'Invalid command' });
   //   }
 
-  let shell = shellsStorage.get(shellId);
+  let shell = terminalsStorage.get(shellId);
 
   if (shell) {
     shell.write(rawCommand);
@@ -67,7 +67,7 @@ function command(req: Request, res: Response) {
   }
 
   // Cap the number of concurrent shells at 10
-  if (shellsStorage.length() >= 10 && !shellsStorage.get(shellId)) {
+  if (terminalsStorage.length() >= 10 && !terminalsStorage.get(shellId)) {
     return res.status(503).json({ message: "Server busy" });
   }
 

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ServersService, ServersResponse } from 'src/app/services/servers.service';
-import { ShellsService } from 'src/app/services/shells.service';
 import { Server } from 'src/app/types/server-types';
 import { AddServerDialogComponent } from '../dialog/add-server-dialog/add-server-dialog.component';
-import lodash from 'lodash';
+import { TerminalConnectionManagerService } from 'src/app/services/shells-connection-manager.service';
+import { TerminalDialogComponent } from '../dialog/terminal-dialog/terminal-dialog.component';
+import { ShellsService } from 'src/app/services/shells.service';
 
 @Component({
   selector: 'app-servers',
@@ -15,14 +16,28 @@ export class ServersComponent implements OnInit {
   private serverDialog?: MatDialogRef<AddServerDialogComponent>;
   servers: Server[]=[];
 
-  constructor(private serversService: ServersService, public dialog: MatDialog){
+  constructor(private _serversService: ServersService, public dialog: MatDialog,
+    private _terminalService: ShellsService,
+    private _terminalConnectionManagerService: TerminalConnectionManagerService){
 
   }
 
-  ngOnInit(): void {
-    this.serversService.getServers().subscribe((response)=> {
+ getTerminals(server: Server): string[] {
+    return Object.values(server.runningShells)
+  }
+
+  private _getServers() {
+    this._serversService.getServers().subscribe((response)=> {
       this.servers = response.result;
-    })
+      this.servers.forEach((server)=> {
+        const terminals = this.getTerminals(server)
+      this._terminalConnectionManagerService.init(terminals);
+      })
+    });
+  }
+
+  ngOnInit(): void {
+    this._getServers();
   }
 
   public addServer() {
@@ -32,7 +47,7 @@ export class ServersComponent implements OnInit {
     this.serverDialog.afterClosed().subscribe(result=> {
       if(result) {
         // TODO: send some feedback to the user
-        this.serversService.addServer(result).subscribe((response: ServersResponse) => {
+        this._serversService.addServer(result).subscribe((response: ServersResponse) => {
           this.servers = response.result;
         });
       }
@@ -41,7 +56,7 @@ export class ServersComponent implements OnInit {
 
   public editServer(server:Server) {
     const currentName = server.name;
-    this.serverDialog = this.dialog.open<AddServerDialogComponent>(AddServerDialogComponent, {data:{
+    this.serverDialog = this.dialog.open(AddServerDialogComponent, {data:{
       actions:'edit',
       server
     }});
@@ -49,18 +64,40 @@ export class ServersComponent implements OnInit {
     this.serverDialog.afterClosed().subscribe(result=> {
       if(result) {
         // TODO: send some feedback to the user
-        this.serversService.editServer(currentName,result).subscribe((response: ServersResponse )=> {
+        this._serversService.editServer(currentName,result).subscribe((response: ServersResponse )=> {
           this.servers = response.result;
         });
       }
     })
   }
 
-  public openShell(shell: string) {
+  public openTerminal(terminalId: string) {
+    const terminalConnection = this._terminalConnectionManagerService.getConnection(terminalId);
+    this._terminalService.getShellHistory(terminalId).subscribe((response)=> {
+      const terminalHistory = response.result;
+      const terminalDialog = this.dialog.open(TerminalDialogComponent, {data:{
+        terminalId:terminalId,
+        connection: terminalConnection,
+        terminalHistory
+      }});
+  
+      terminalDialog.afterClosed().subscribe(()=> {
+      })
+    })
+  }
+
+  public stopTerminal(server:Server, terminal: string) {
     
   }
 
-  public stopShell(server:Server, shell: string) {
-    
+  public createTerminal(serverName: string) {
+    this._terminalService.create(serverName).subscribe((response)=> {
+      if(response.result && response.result[0]){
+        const terminalId = response.result[0];
+        // this._getServers();
+        this._terminalConnectionManagerService.init([terminalId]);
+        this.openTerminal(terminalId);
+      }
+    });
   }
 }

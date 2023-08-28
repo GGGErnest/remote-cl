@@ -1,14 +1,20 @@
-export type WSMessageTypes = 'Output';
+export type WSMessageTypes = 'Output' | 'Input';
 
 export interface WSMessage {
     type:WSMessageTypes;
-    shellId:string;
+    terminalId:string;
 }
 
 export interface WSOutMessage extends WSMessage {
     type: 'Output';
-    threadId: string;
     output?: string;
     shellError?: string;
     serverError?: string;
 }
+
+export interface WSInputMessage extends WSMessage {
+    type: 'Input';
+    message: string;
+}
+
+export type WSState = 'Disconnected' | 'Connecting' | 'Disconnecting' | 'Connected' | "Reconnecting"

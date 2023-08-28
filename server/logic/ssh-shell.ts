@@ -1,9 +1,10 @@
 import { Client, ClientChannel, ConnectConfig, WriteStream } from "ssh2";
 import { Shell } from "../types/shell-types.js";
-import { WSOutMessage, WSPromptMessage } from "../types/ws-types.js";
+import { WSOutputMessage, WSPromptMessage } from "../types/ws-types.js";
 import { broadcast } from "../ws-server.js";
-import { shellsStorage } from "../state/shells.js";
+import { terminalsStorage } from "../state/shells.js";
 import lodash from 'lodash';
+import { deleteTerminal } from "../routes/terminals-routes.js";
 
 interface ShellMessage {
   count:number;
@@ -38,6 +39,10 @@ class ShellMessagesHandler {
       this._messageCount+=1
     }
 
+    public getMessages() {
+      return this._messages;
+    }
+
     // public addAnswer(answer:string) {
     //     this.answers.push(answer);
     //     this.unansweredPrompts.splice(1, this.unansweredPrompts.length-1);
@@ -64,21 +69,9 @@ export class SSHShell implements Shell {
   }
 
   public write(command: string) {
-    if(this.passwordRequired) {
-        this.connectionSettings.password = command;
-        console.log('New settings ', this.connectionSettings);
-        this.connection.connect(this.connectionSettings);
-        return;
-    }
-
-    // command is an answer
-    if(this._messages.hasUnansweredPrompts()) {
-        this._messages.addInMessage(command);
-        return;
-    }
-
     if (this.shellWriteStream && this.shellWriteStream.writable) {
-      this.shellWriteStream?.write(command + "\n");
+      console.log('Writing to terminal', command);
+      this.shellWriteStream?.write(command);
     }
   }
 
@@ -112,9 +105,9 @@ export class SSHShell implements Shell {
             "Server error in shell " + this.shellId + " ",
             serverError
           );
-          const message: WSOutMessage = {
+          const message: WSOutputMessage = {
             type: "Output",
-            threadId: this.shellId,
+            terminalId: this.shellId,
             serverError,
           };
           broadcast(message);
@@ -122,58 +115,43 @@ export class SSHShell implements Shell {
         }
 
         stream.on("close", () => {
-          const exitMessage = `The process exited`;
+          const exitMessage = `Terminal Closed`;
           console.log(exitMessage);
-          const message: WSOutMessage = {
+          const message: WSOutputMessage = {
             type: "Output",
-            threadId: this.shellId,
+            terminalId: this.shellId,
             output: exitMessage,
           };
           broadcast(message);
 
           this.connection.end();
-          shellsStorage.remove(this.shellId);
+          
+          deleteTerminal(this.shellId);
         });
 
         stream.on("data", (data: string) => {
           const output = data.toString();
           console.log("Data received from shell " + this.shellId + " ", output);
-          const message: WSOutMessage = {
+          const message: WSOutputMessage = {
             type: "Output",
-            threadId: this.shellId,
+            terminalId: this.shellId,
             output,
           };
           broadcast(message);
           this._messages.addOutMessage(output);
         });
 
-        shellsStorage.add(this.shellId, this);
+        terminalsStorage.add(this.shellId, this);
       });
     });
-
-    this.connection.on(
-      "keyboard-interactive",
-      (name, instructions, instructionsLang, prompts, finish) => {
-        console.log(name);
-        console.log(instructions);
-
-        if (prompts.length > 0) {
-            prompts.forEach((prompt)=> {
-                this._messages.addPrompt(prompt.prompt);
-            })
-        } else {
-          finish([]);
-        }
-      }
-    );
 
     this.connection.on("error", (err) => {
       if (err.level === "client-authentication") {
         this.passwordRequired = true;
         console.log('Auth error', err);
-        const output: WSOutMessage = {
+        const output: WSOutputMessage = {
             type:'Output',
-            threadId: this.shellId,
+            terminalId: this.shellId,
             output: 'Please enter the password'
         } 
         broadcast(output);

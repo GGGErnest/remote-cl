@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import {concatAll, map, } from 'rxjs/operators';
 import { WebSocketService } from './web-socket.service';
 import { environment } from '../../environments/environment';
+import { WSState } from '../types/ws-types';
 
 export interface Response {
    message: string;
@@ -35,10 +36,10 @@ export class AuthService {
     return localStorage.getItem(this.authTokenKey);
    }
 
-   private intiWSConnection(): Observable<boolean> {
+   private intiWSConnection(): Observable<WSState> {
     // Should start the connection
     this.webSocket.connect();
-    return this.webSocket.isConnected$;
+    return this.webSocket.state$;
    }
 
   login(password:string) {

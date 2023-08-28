@@ -7,6 +7,7 @@ import { Unicode11Addon } from 'xterm-addon-unicode11';
 import { ImageAddon } from 'xterm-addon-image';
 import { SerializeAddon } from 'xterm-addon-serialize';
 import { ITerminalAddon } from 'xterm';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 
 
@@ -28,4 +29,4 @@ export interface AddonWrapper<T extends AddonType> {
     );
     instance?: ITerminalAddon;
   }
-
+  

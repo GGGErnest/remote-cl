@@ -7,5 +7,5 @@ export interface Server {
         password:string;
     };
     description: string;
-    runningShells?: string[];
+    runningShells: {[key:string]:string};
 }

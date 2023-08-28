@@ -15,7 +15,7 @@ export class LoginComponent {
   login() {
     this.authService.login(this.password).subscribe(isLoggedIn => {
       if(isLoggedIn){
-        this.router.navigate(['/command']);
+        this.router.navigate(['/servers']);
       } else {
         this.router.navigate(['/login']);
       }

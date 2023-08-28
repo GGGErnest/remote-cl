@@ -4,5 +4,5 @@ export interface Server {
     name: string;
     description: string;
     connectionSettings?: ConnectConfig;
-    runningShells?: string[]
+    runningShells: {[key:string]:string};
 }

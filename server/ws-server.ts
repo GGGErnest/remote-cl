@@ -1,14 +1,25 @@
 import WebSocket, { WebSocketServer } from "ws";
-import { WSMessage } from "./types/ws-types";
+import { WSInputMessage, WSMessage } from "./types/ws-types.js";
+import { terminalsStorage } from "./state/shells.js";
 
 export let wss: WebSocketServer | undefined;
 
 export function startWS(host = 'localhost',port = 3001) {
-  wss = new WebSocketServer({ host,port });
-
+  wss = new WebSocketServer({ host, port });
   wss.on("connection", (ws: any) => {
     ws.on("message", (message: any) => {
       console.log("Received:", message);
+      
+      try {
+        const inputMessage = (JSON.parse(message) as WSInputMessage);
+        console.log("Parsed Message Received:", inputMessage);
+        const shell = terminalsStorage.get(inputMessage.terminalId);
+        // console.log('Shell where to write the command ', shell);
+        shell?.write(inputMessage.message);
+      } catch (error) {
+        console.error('Error when parsing Websocket message ', message);
+      }
+      
     });
 
     // To keep the connection alive.

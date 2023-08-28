@@ -18,7 +18,6 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
 import { CommandService } from './services/command.service';
 import { PermissionsService } from './services/permission.service';
-import { ShellComponent } from './components/shell/shell.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { AuthInterceptor } from './services/interceptors/auth-interceptor';
 import { ShellsService } from './services/shells.service';
@@ -26,22 +25,23 @@ import { WebSocketService } from './services/web-socket.service';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgTerminalModule } from 'ng-terminal';
 import { ServersComponent } from './components/servers/servers.component';
 import { AddServerDialogComponent } from './components/dialog/add-server-dialog/add-server-dialog.component';
 import { ServerComponent } from './components/server/server.component';
-import { ShellDialogComponent } from './components/dialog/shell-dialog/shell-dialog.component';
+import { TerminalDialogComponent } from './components/dialog/terminal-dialog/terminal-dialog.component';
+import { TerminalConnectionManagerService } from './services/shells-connection-manager.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    ShellComponent,
     LogoutComponent,
     ServersComponent,
     AddServerDialogComponent,
     ServerComponent,
-    ShellDialogComponent
+    TerminalDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +59,7 @@ import { ShellDialogComponent } from './components/dialog/shell-dialog/shell-dia
     NgTerminalModule,
     MatCardModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline', subscriptSizing:'dynamic'}},
@@ -68,6 +69,7 @@ import { ShellDialogComponent } from './components/dialog/shell-dialog/shell-dia
      ShellsService,
      WebSocketService,
      PermissionsService,
+     TerminalConnectionManagerService
     ],
   bootstrap: [AppComponent]
 })

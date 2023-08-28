@@ -1,6 +1,7 @@
 import { getDB } from "../logic/database.js";
 import { Request, Response } from "express";
 import lodash from 'lodash';
+import { Server } from "../types/server-types.js";
 
 function getServers(req: Request, res: Response) {
     const servers = getDB().chain.get('servers').value();
@@ -18,9 +19,11 @@ function getServer(req: Request, res: Response) {
 }
 
 function  addServer(req: Request, res: Response) {
-    const server = req.body;
+    const server: Server = {...req.body,runningShells:{}};
+    console.log('Server to Add', server);
     const db = getDB();
-    const servers = db.chain.get('servers').value();
+    let servers = db.chain.get('servers').value();
+    console.log('Servers retrieved from DB ', servers);
     servers.push(server);
     db.write();
     res.status(200).json({message:'Server added',result:servers});

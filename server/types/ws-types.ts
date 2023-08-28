@@ -1,15 +1,20 @@
-export type WSMessageTypes = 'Output' | 'Prompt' | 'Shell';
+export type WSMessageTypes = 'Output' | 'Prompt' | 'Shell' | "Input";
 
 export interface WSMessage {
     type:WSMessageTypes;
-    threadId: string;
+    terminalId: string;
 }
 
-export interface WSOutMessage extends WSMessage {
+export interface WSOutputMessage extends WSMessage {
     type: 'Output';
     output?: string;
     shellError?: string;
     serverError?: string;
+}
+
+export interface WSInputMessage extends WSMessage {
+    type: 'Input';
+    message: string;
 }
 
 export interface WSPromptMessage extends WSMessage {

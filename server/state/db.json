@@ -2,23 +2,14 @@
   "servers": [
     {
       "name": "Rasp",
-      "description": "short description",
+      "description": "asda",
       "connectionSettings": {
-        "host": "",
+        "host": "192.168.178.64",
         "port": 22,
-        "username": "",
-        "password": ""
-      }
-    },
-    {
-      "name": "test",
-      "description": "asdf",
-      "connectionSettings": {
-        "host": "afdsfasd",
-        "port": 22,
-        "username": "asdf",
-        "password": "asdfasfd"
-      }
+        "username": "ernesto",
+        "password": "acceso"
+      },
+      "runningShells": {}
     }
   ]
 }

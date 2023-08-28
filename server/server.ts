@@ -6,7 +6,7 @@ import {startWS } from "./ws-server.js";
 
 import { registerAuthRoutes } from "./routes/authentication-routes.js";
 import { registerCommandRoutes } from "./routes/command-routes.js";
-import { registerShellsRoutes } from "./routes/shells-routes.js";
+import { registerTerminalRoutes } from "./routes/terminals-routes.js";
 import { settings } from './state/settings.js';
 import { initDB } from "./logic/database.js";
 import { registerServersRoutes } from "./routes/servers-routes.js";
@@ -49,7 +49,7 @@ app.use(
 
 registerAuthRoutes(app);
 registerCommandRoutes(app);
-registerShellsRoutes(app);
+registerTerminalRoutes(app);
 registerServersRoutes(app);
 
 app.listen(settings.webServer.port, settings.webServer.host , () => {
