@@ -27,6 +27,13 @@ export interface TerminalDialogData {
 export class TerminalDialogComponent implements AfterViewInit {
   private _command = '';
   private _previousCommand = '';
+  private _webGlAddon = new WebglAddon();
+  private _unicode11 = new Unicode11Addon();
+  private _serializeAddon = new SerializeAddon();
+  private _searchAddon = new SearchAddon();
+  private _fitAddon = new FitAddon();
+
+
 
   cols = 80;
   rows = 20;
@@ -72,7 +79,7 @@ export class TerminalDialogComponent implements AfterViewInit {
     console.info('Data ', input);
       switch(input) {
         case '\u0012': // Ctrl+R
-          // this.data.connection.input("\u0012");
+          // this._searchAddon.findNext(input);
           break;
         case '\r': // Carriage Return (When Enter is pressed)
           this.data.connection.input(this._command+"\r");
@@ -101,11 +108,12 @@ export class TerminalDialogComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.term.onData().subscribe((input) => this._onTerminalInput(input));
 
-    this.term.underlying?.loadAddon(new FitAddon());
-    this.term.underlying?.loadAddon(new WebglAddon());
-    this.term.underlying?.loadAddon(new Unicode11Addon());
-    this.term.underlying?.loadAddon(new SerializeAddon());
-    this.term.underlying?.loadAddon(new SearchAddon());
+    this.term.underlying?.loadAddon(this._fitAddon);
+    this.term.underlying?.loadAddon(this._webGlAddon);
+    this.term.underlying?.loadAddon(this._unicode11);
+    this.term.underlying?.loadAddon(this._serializeAddon);
+    this.term.underlying?.loadAddon(this._searchAddon);
+
 
     this.data.terminalHistory.forEach(message=> {
       this.term.write(message);
