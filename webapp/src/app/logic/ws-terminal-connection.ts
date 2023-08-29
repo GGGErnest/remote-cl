@@ -15,10 +15,10 @@ export class WSTerminalConnection implements TerminalConnection {
 
   output = this._output.asObservable();
 
-  constructor(private shellId: string, private wss: WebSocketService) {
+  constructor(private terminalId: string, private wss: WebSocketService, private _onDestroyCompleted?:(terminalId:string)=> void) {
     this.wss.messages.pipe(
       takeWhile(() => wss.state === 'Connected'),
-      filter((wsMessage) => wsMessage.terminalId === this.shellId),
+      filter((wsMessage) => wsMessage.terminalId === this.terminalId),
       tap((wsMessage) => this._handleWSMessage(wsMessage))
     ).subscribe();
   }
@@ -41,7 +41,7 @@ export class WSTerminalConnection implements TerminalConnection {
 
   public input(input: string) {
     const message: WSInputMessage = {
-      terminalId: this.shellId,
+      terminalId: this.terminalId,
       type: 'Input',
       message: input,
     };
@@ -50,5 +50,8 @@ export class WSTerminalConnection implements TerminalConnection {
 
   public destroy(): void {
     this._output.complete();
+    if(this._onDestroyCompleted){
+      this._onDestroyCompleted(this.terminalId);
+    }
   }
 }

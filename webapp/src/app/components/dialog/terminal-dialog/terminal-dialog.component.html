@@ -1,13 +1,13 @@
-<h1 mat-dialog-title>
-    Terminal {{data.terminalID}}
-</h1>
+<h1 mat-dialog-title>Terminal {{ data.terminalID }}</h1>
 <div mat-dialog-content>
-    <mat-spinner *ngIf="!isTerminalReady; else terminal"></mat-spinner>
-    <ng-template #terminal>
-        <ng-terminal cdkFocusInitial #term [xtermOptions]="terminalOptions" [cols]="cols" [rows]="rows"></ng-terminal>
-    </ng-template>
+  <ng-terminal
+    cdkFocusInitial
+    #term
+    [xtermOptions]="terminalOptions"
+    [cols]="cols"
+    [rows]="rows"
+  ></ng-terminal>
 </div>
 <div mat-dialog-actions>
-<button mat-button (click)="close()">Close</button>
+  <button mat-button #closeBtn (click)="close()">Close</button>
 </div>
- 

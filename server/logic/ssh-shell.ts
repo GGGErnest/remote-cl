@@ -12,11 +12,11 @@ interface ShellMessage {
   message:string;
 }
 
-class ShellMessagesHandler {
+class TerminalMessagesHandler {
     private _messageCount = 0;
     private _messages: ShellMessage[] = [];
     
-    constructor(private finishCallback:(answers:string[])=> void){
+    constructor() {
 
     }
 
@@ -42,23 +42,12 @@ class ShellMessagesHandler {
     public getMessages() {
       return this._messages;
     }
-
-    // public addAnswer(answer:string) {
-    //     this.answers.push(answer);
-    //     this.unansweredPrompts.splice(1, this.unansweredPrompts.length-1);
-    //     if(!this.hasUnansweredPrompts()) {
-    //         this.finishCallback(Array.from(this.answers));
-    //         this.unansweredPrompts = [];
-    //         this.answers = [];
-    //     }
-    // }
 }
 
-export class SSHShell implements Shell {
+export class SSHTerminal implements Shell {
   private connection = new Client();
   private shellWriteStream?: ClientChannel;
-  private passwordRequired = false;
-  private _messages = new ShellMessagesHandler((answers:string[])=> this.onAllPromptsAnswered(answers));
+  private _messages = new TerminalMessagesHandler();
   private finishCallBack?: Function;
 
   constructor(
@@ -70,7 +59,7 @@ export class SSHShell implements Shell {
 
   public write(command: string) {
     if (this.shellWriteStream && this.shellWriteStream.writable) {
-      console.log('Writing to terminal', command);
+      // console.log('Writing to terminal', command);
       this.shellWriteStream?.write(command);
     }
   }
@@ -80,7 +69,8 @@ export class SSHShell implements Shell {
   }
 
   public destroy() {
-    this.shellWriteStream?.end();
+    this.shellWriteStream?.end('exit\r');
+    this.connection.end();
     this.connection.destroy();
   }
 
@@ -94,8 +84,6 @@ export class SSHShell implements Shell {
     this.connection.on("ready", () => {
       console.log("SSH Client ready");
       
-      this.passwordRequired = false;
-
       this.connection.shell((err, stream) => {
         this.shellWriteStream = stream;
         // error thrown by the ssh connection
@@ -122,16 +110,16 @@ export class SSHShell implements Shell {
             terminalId: this.shellId,
             output: exitMessage,
           };
+
           broadcast(message);
 
-          this.connection.end();
-          
           deleteTerminal(this.shellId);
         });
 
+        // listening for data coming from the terminal on the host
         stream.on("data", (data: string) => {
           const output = data.toString();
-          console.log("Data received from shell " + this.shellId + " ", output);
+          // console.log("Data received from shell " + this.shellId + " ", output);
           const message: WSOutputMessage = {
             type: "Output",
             terminalId: this.shellId,
@@ -147,7 +135,6 @@ export class SSHShell implements Shell {
 
     this.connection.on("error", (err) => {
       if (err.level === "client-authentication") {
-        this.passwordRequired = true;
         console.log('Auth error', err);
         const output: WSOutputMessage = {
             type:'Output',

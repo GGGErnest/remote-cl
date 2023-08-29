@@ -9,7 +9,10 @@
         "username": "ernesto",
         "password": "acceso"
       },
-      "runningShells": {}
+      "runningShells": {
+        "1": "1",
+        "2": "2"
+      }
     }
   ]
 }

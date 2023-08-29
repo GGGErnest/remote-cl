@@ -5,7 +5,6 @@ import session from "express-session";
 import {startWS } from "./ws-server.js";
 
 import { registerAuthRoutes } from "./routes/authentication-routes.js";
-import { registerCommandRoutes } from "./routes/command-routes.js";
 import { registerTerminalRoutes } from "./routes/terminals-routes.js";
 import { settings } from './state/settings.js';
 import { initDB } from "./logic/database.js";
@@ -48,7 +47,6 @@ app.use(
 );
 
 registerAuthRoutes(app);
-registerCommandRoutes(app);
 registerTerminalRoutes(app);
 registerServersRoutes(app);
 

@@ -8,13 +8,12 @@ export function startWS(host = 'localhost',port = 3001) {
   wss = new WebSocketServer({ host, port });
   wss.on("connection", (ws: any) => {
     ws.on("message", (message: any) => {
-      console.log("Received:", message);
+      // console.log("Received:", message);
       
       try {
         const inputMessage = (JSON.parse(message) as WSInputMessage);
-        console.log("Parsed Message Received:", inputMessage);
+        // console.log("Parsed Message Received:", inputMessage);
         const shell = terminalsStorage.get(inputMessage.terminalId);
-        // console.log('Shell where to write the command ', shell);
         shell?.write(inputMessage.message);
       } catch (error) {
         console.error('Error when parsing Websocket message ', message);
@@ -23,7 +22,7 @@ export function startWS(host = 'localhost',port = 3001) {
     });
 
     // To keep the connection alive.
-    const interval = setInterval(() => {
+    setInterval(() => {
       if (ws.readyState === WebSocket.OPEN) {
         ws.ping(() => {});
       }
@@ -48,7 +47,7 @@ export function broadcast(data: WSMessage) {
 
   wss.clients.forEach((client: any) => {
     if (client.readyState === WebSocket.OPEN) {
-      console.log("WS message Sent ->", data);
+      // console.log("WS message Sent ->", data);
       client.send(JSON.stringify(data));
     }
   });

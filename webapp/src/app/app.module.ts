@@ -16,11 +16,10 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
-import { CommandService } from './services/command.service';
 import { PermissionsService } from './services/permission.service';
 import { LogoutComponent } from './components/logout/logout.component';
 import { AuthInterceptor } from './services/interceptors/auth-interceptor';
-import { ShellsService } from './services/shells.service';
+import { TerminalsService } from './services/terminals.service';
 import { WebSocketService } from './services/web-socket.service';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
@@ -32,6 +31,8 @@ import { AddServerDialogComponent } from './components/dialog/add-server-dialog/
 import { ServerComponent } from './components/server/server.component';
 import { TerminalDialogComponent } from './components/dialog/terminal-dialog/terminal-dialog.component';
 import { TerminalConnectionManagerService } from './services/shells-connection-manager.service';
+import { StateService } from './services/state.service';
+import { ErrorHandlingInterceptor } from './services/interceptors/error-handling-intercepto';
 
 @NgModule({
   declarations: [
@@ -64,12 +65,13 @@ import { TerminalConnectionManagerService } from './services/shells-connection-m
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline', subscriptSizing:'dynamic'}},
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlingInterceptor, multi: true },
      AuthService,
-     CommandService,
-     ShellsService,
+     TerminalsService,
      WebSocketService,
      PermissionsService,
-     TerminalConnectionManagerService
+     TerminalConnectionManagerService,
+     StateService,
     ],
   bootstrap: [AppComponent]
 })

@@ -1,18 +1,18 @@
 import { ChildProcessWithoutNullStreams } from "child_process";
-import { SSHShell } from "../logic/ssh-shell.js";
+import { SSHTerminal } from "../logic/ssh-shell.js";
 
 export class TerminalsStorage {
-    private terminals: Record<string, SSHShell> = {}; 
+    private terminals: Record<string, SSHTerminal> = {}; 
 
     constructor() {
 
     }
 
-    public add(shellId: string, shell: SSHShell) {
+    public add(shellId: string, shell: SSHTerminal) {
         this.terminals[shellId]= shell;
     }
 
-    public get(id:string): SSHShell | undefined {
+    public get(id:string): SSHTerminal | undefined {
        // returns the ssh client primarily if exist if not then returns the normal shell
         return this.terminals[id];
     }
