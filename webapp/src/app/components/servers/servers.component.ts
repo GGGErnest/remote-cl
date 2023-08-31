@@ -8,9 +8,9 @@ import { AddServerDialogComponent } from '../dialog/add-server-dialog/add-server
 import { TerminalConnectionManagerService } from 'src/app/services/shells-connection-manager.service';
 import { TerminalDialogComponent } from '../dialog/terminal-dialog/terminal-dialog.component';
 import { TerminalsService } from 'src/app/services/terminals.service';
-import { CreateTerminalResponse } from 'src/app/types/api/response-types';
-import lodash from 'lodash';
 import { StateService } from 'src/app/services/state.service';
+import {PromptDialogComponent} from '../dialog/prompt-dialog/prompt-dialog.component';
+
 @Component({
   selector: 'app-servers',
   templateUrl: './servers.component.html',
@@ -76,7 +76,7 @@ export class ServersComponent implements OnInit {
   }
 
   public openTerminal(terminalId: string) {
-    const terminalConnection =
+      const terminalConnection =
       this._terminalConnectionManagerService.getConnection(terminalId);
     this._terminalService.getShellHistory(terminalId).subscribe((response) => {
       const terminalHistory = response.result;
@@ -101,12 +101,16 @@ export class ServersComponent implements OnInit {
   }
 
   public createTerminal(server: Server) {
-    this._terminalService.create(server.name).subscribe((response) => {
-      if (response.result) {
-        const terminalId = Object.keys(response.result)[0];
-        this.openTerminal(terminalId);
-      }
+    const promptDialog = this.dialog.open(PromptDialogComponent);
+    promptDialog.afterClosed().subscribe(terminalId=> {
+      this._terminalService.create(server.name, terminalId).subscribe((response) => {
+        if (response.result) {
+          const terminalId = Object.keys(response.result)[0];
+          this.openTerminal(terminalId);
+        }
+      });
     });
+    
   }
 
   public deleteServer(server:Server) {

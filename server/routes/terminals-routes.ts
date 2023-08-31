@@ -97,7 +97,7 @@ function create(req: Request, res: Response) {
     .chain.get("servers")
     .find({ name: req.body.server })
     .value();
-  let terminalIDs = generateTerminalId(server);
+  let terminalIDs = generateTerminalId(server, req.body.terminalId);
   
   if (server?.connectionSettings) {
     console.log("Connection info ", server.connectionSettings);

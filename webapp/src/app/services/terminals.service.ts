@@ -41,8 +41,8 @@ export class TerminalsService {
     return this.http.delete(`${this.apiUrl}shells/all/` + serverName);
   }
 
-  create(serverName: string): Observable<CreateTerminalResponse> {
-    return this.http.post<CreateTerminalResponse>(this.apiUrl,{server: serverName}).pipe(tap(response=> {
+  create(serverName: string, terminalId:string): Observable<CreateTerminalResponse> {
+    return this.http.post<CreateTerminalResponse>(this.apiUrl,{server: serverName, terminalId}).pipe(tap(response=> {
       if (response.result) {
         const terminalId = Object.keys(response.result)[0];
         this._termConnManagerService.init([terminalId]);

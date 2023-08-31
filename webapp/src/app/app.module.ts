@@ -33,6 +33,7 @@ import { TerminalDialogComponent } from './components/dialog/terminal-dialog/ter
 import { TerminalConnectionManagerService } from './services/shells-connection-manager.service';
 import { StateService } from './services/state.service';
 import { ErrorHandlingInterceptor } from './services/interceptors/error-handling-intercepto';
+import { PromptDialogComponent } from './components/dialog/prompt-dialog/prompt-dialog.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { ErrorHandlingInterceptor } from './services/interceptors/error-handling
     AddServerDialogComponent,
     ServerComponent,
     TerminalDialogComponent,
+    PromptDialogComponent,
   ],
   imports: [
     BrowserModule,
