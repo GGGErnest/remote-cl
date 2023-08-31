@@ -8,11 +8,78 @@
 }
 
 mat-card {
-    max-width: 400px;
+    width: 400px;
     margin: 0px 0px 20px 20px;
 }
 
 .toolbar {
     height: 50px;
     margin: 10px;
+    border-bottom: solid 1px lightgray;
+}
+
+.terminal-item {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.terminal-item button {
+    align-self: flex-end;
+}
+
+.terminal-item span {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.terminal-item-open {
+    align-self: flex-end;
+}
+
+mat-card-content {
+    display: flex;
+    flex-direction: column;
+    margin: 16px;
+    padding: 0 0 0 16px;
+}
+
+mat-card-header {
+    display: flex;
+    flex-direction: row;
+    padding: 5px 16px;
+}
+
+mat-card-header div {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 2;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+mat-card-header mat-card-title {
+    flex-grow: 1;
+}
+
+mat-card-header button {
+    padding: 0px;
+    margin: 0px 16px 0px 0px;
+    font-size: 8px;
+    height: 24px;
+    width: 24px;
+}
+
+.terminal-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: baseline;
+    flex-grow: 1;
+}
+
+mat-card-actions {
+    display: flex;
+    flex-direction: row-reverse;
 }

@@ -39,6 +39,6 @@
     </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="cancel()">Cancel</button>
-  <button mat-button [mat-dialog-close]="serverFormGroup.value" cdkFocusInitial>Save</button>
+  <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="serverFormGroup.value" cdkFocusInitial>Save</button>
 </div>

@@ -77,37 +77,14 @@ export class TerminalDialogComponent implements AfterViewInit {
 
   private _onTerminalInput(input:string) {
     console.info('Data ', input);
-      switch(input) {
-        case '\u0012': // Ctrl+R
-          // this._searchAddon.findNext(input);
-          break;
-        case '\r': // Carriage Return (When Enter is pressed)
-          this.data.connection.input(this._command+"\r");
-          this._previousCommand = this._command;
-          this._command = '';
-          this._prompt();
-        break;
-        case '\u007f': // Delete (When Backspace is pressed)
-          if(this._command.length > 0){
-            this._command = this._command.slice(0,this._command.length-1);
-            this.term.write('\b \b');
-          }
-          break;
-        case '\u0003': // End of Text (When Ctrl and C are pressed)
-          this.data.connection.input("\u0003");
-          this.term.write("^C");
-          this._prompt();
-          break;
-        default:
-          this.term.write(input);
-          this._command+= input;
-          break;
-      }
+    this.data.connection.input(input);
   }
 
   ngAfterViewInit(): void {
     this.term.onData().subscribe((input) => this._onTerminalInput(input));
-
+    this.term.underlying?.onResize(({cols,rows})=> {
+      
+    });
     this.term.underlying?.loadAddon(this._fitAddon);
     this.term.underlying?.loadAddon(this._webGlAddon);
     this.term.underlying?.loadAddon(this._unicode11);

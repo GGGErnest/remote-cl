@@ -28,7 +28,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgTerminalModule } from 'ng-terminal';
 import { ServersComponent } from './components/servers/servers.component';
 import { AddServerDialogComponent } from './components/dialog/add-server-dialog/add-server-dialog.component';
-import { ServerComponent } from './components/server/server.component';
 import { TerminalDialogComponent } from './components/dialog/terminal-dialog/terminal-dialog.component';
 import { TerminalConnectionManagerService } from './services/shells-connection-manager.service';
 import { StateService } from './services/state.service';
@@ -42,7 +41,6 @@ import { PromptDialogComponent } from './components/dialog/prompt-dialog/prompt-
     LogoutComponent,
     ServersComponent,
     AddServerDialogComponent,
-    ServerComponent,
     TerminalDialogComponent,
     PromptDialogComponent,
   ],
