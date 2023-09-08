@@ -2,7 +2,7 @@
   <button mat-button color="primary" (click)="addServer()">Add Server</button>
 </div>
 <div class="servers">
-    <mat-card *ngFor="let server of (_stateService.servers$ | async)" class="example-card">
+    <mat-card *ngFor="let server of (_stateService.servers$ | async)">
         <mat-card-header>
           <mat-card-title>{{server.name}}</mat-card-title>
           <div>

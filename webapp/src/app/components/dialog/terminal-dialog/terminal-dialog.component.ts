@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { NgTerminal } from 'ng-terminal';
 import { filter } from 'rxjs';
 import { TerminalsService } from 'src/app/services/terminals.service';
@@ -25,18 +25,11 @@ export interface TerminalDialogData {
   styleUrls: ['./terminal-dialog.component.scss']
 })
 export class TerminalDialogComponent implements AfterViewInit {
-  private _command = '';
-  private _previousCommand = '';
   private _webGlAddon = new WebglAddon();
   private _unicode11 = new Unicode11Addon();
   private _serializeAddon = new SerializeAddon();
   private _searchAddon = new SearchAddon();
   private _fitAddon = new FitAddon();
-
-
-
-  cols = 80;
-  rows = 20;
   terminalOptions: ITerminalOptions = {cursorBlink: true, allowProposedApi:true, macOptionClickForcesSelection:true,macOptionIsMeta:true};
   @ViewChild('term',{ static: false }) term!: NgTerminal;
   @ViewChild('closeBtn',{ static: false }) closeBtn!: HTMLButtonElement;
@@ -45,7 +38,7 @@ export class TerminalDialogComponent implements AfterViewInit {
     public dialogRef: MatDialogRef<TerminalDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TerminalDialogData,
   ) {
-    this.data.connection.output.pipe(filter(value=> this._shouldMessageBeDisplayed(value))).subscribe({next:(output)=> {
+    this.data.connection.output.subscribe({next:(output)=> {
       if(output){
         this.term.write(output);
       }
@@ -59,22 +52,6 @@ export class TerminalDialogComponent implements AfterViewInit {
     this.dialogRef.close();
   }
 
-  private _shouldMessageBeDisplayed(value:string | undefined): boolean {
-    if(!value){
-      return false;
-    }
-
-    if(this._previousCommand && this._previousCommand === value.trimEnd()){
-      return false;
-    }
-
-    return true;
-  }
-
-  private _prompt() {
-    this.term.write('\r\n');
-  }
-
   private _onTerminalInput(input:string) {
     console.info('Data ', input);
     this.data.connection.input(input);
@@ -82,9 +59,6 @@ export class TerminalDialogComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.term.onData().subscribe((input) => this._onTerminalInput(input));
-    this.term.underlying?.onResize(({cols,rows})=> {
-      
-    });
     this.term.underlying?.loadAddon(this._fitAddon);
     this.term.underlying?.loadAddon(this._webGlAddon);
     this.term.underlying?.loadAddon(this._unicode11);
@@ -94,6 +68,7 @@ export class TerminalDialogComponent implements AfterViewInit {
 
     this.data.terminalHistory.forEach(message=> {
       this.term.write(message);
+      this._fitAddon.fit();
     })
   }
 }

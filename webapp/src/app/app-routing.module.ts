@@ -4,8 +4,10 @@ import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import {canActivate} from './services/permission.service';
 import { ServersComponent } from './components/servers/servers.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 const routes: Routes = [
+  { path: 'dashboard', component: DashboardComponent, canActivate: [canActivate] },
   { path: 'servers', component: ServersComponent, canActivate: [canActivate] },
   { path: 'logout', component: LogoutComponent, canActivate: [canActivate] },
   { path: 'login', component: LoginComponent},

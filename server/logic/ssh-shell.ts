@@ -1,6 +1,6 @@
-import { Client, ClientChannel, ConnectConfig, WriteStream } from "ssh2";
+import { Client, ClientChannel, ConnectConfig } from "ssh2";
 import { Shell } from "../types/shell-types.js";
-import { WSOutputMessage, WSPromptMessage } from "../types/ws-types.js";
+import { WSInputMessage, WSMessage, WSOutputMessage, WSTerminalResizeMessage } from "../types/ws-types.js";
 import { broadcast } from "../ws-server.js";
 import { terminalsStorage } from "../state/shells.js";
 import lodash from 'lodash';
@@ -48,13 +48,24 @@ export class SSHTerminal implements Shell {
   private connection = new Client();
   private shellWriteStream?: ClientChannel;
   private _messages = new TerminalMessagesHandler();
-  private finishCallBack?: Function;
 
   constructor(
     private shellId: string,
     private connectionSettings: ConnectConfig
   ) {
     this.init();
+  }
+
+  public handleMessage(message: WSMessage) {
+    switch(message.type){
+      case 'TerminalResize': 
+      const resizeMessage = (message as WSTerminalResizeMessage);
+      // this.shellWriteStream?.setWindow(resizeMessage.rows, resizeMessage.cols)
+      break;
+      case 'Input':
+        this.write((message as WSInputMessage).message);
+        break;
+    }
   }
 
   public write(command: string) {
@@ -72,12 +83,6 @@ export class SSHTerminal implements Shell {
     this.shellWriteStream?.end('exit\r');
     this.connection.end();
     this.connection.destroy();
-  }
-
-  private onAllPromptsAnswered(answers:string[]) {
-    if(this.finishCallBack){
-        this.finishCallBack(answers);
-    }
   }
   
   private registerListeners() {

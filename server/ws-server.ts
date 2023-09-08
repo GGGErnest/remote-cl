@@ -11,10 +11,10 @@ export function startWS(host = 'localhost',port = 3001) {
       // console.log("Received:", message);
       
       try {
-        const inputMessage = (JSON.parse(message) as WSInputMessage);
+        const inputMessage = (JSON.parse(message) as WSMessage);
         // console.log("Parsed Message Received:", inputMessage);
         const shell = terminalsStorage.get(inputMessage.terminalId);
-        shell?.write(inputMessage.message);
+        shell?.handleMessage(inputMessage);
       } catch (error) {
         console.error('Error when parsing Websocket message ', message);
       }

@@ -6,7 +6,7 @@ import { HistorySubject } from '../utils/history-subject';
 import { WSOutMessage } from '../types/ws-types';
 import { environment } from '../../environments/environment';
 import { serializeMap, deserializeMap } from '../utils/serializers';
-import { CreateTerminalResponse, TerminalResponse } from '../types/api/response-types';
+import { CreateTerminalResponse, TerminalHistoryResponse, TerminalResponse } from '../types/api/response-types';
 import { TerminalConnectionManagerService } from './shells-connection-manager.service';
 import { StateService } from './state.service';
 import lodash from 'lodash';
@@ -24,11 +24,11 @@ export class TerminalsService {
     private _termConnManagerService: TerminalConnectionManagerService,
     private _stateService: StateService) {}
 
-  public getShellHistory(shellId: string) {
-    return this.http.get<TerminalResponse>(this.apiUrl + shellId + '/history');
+  public getTerminalHistory(shellId: string) {
+    return this.http.get<TerminalHistoryResponse>(this.apiUrl + shellId + '/history');
   }
 
-  getAllShells(): Observable<any> {
+  getAllTerminals(): Observable<any> {
     return this.http.get<TerminalResponse>(this.apiUrl);
   }
 

@@ -7,7 +7,7 @@ import {
   tap,
 } from 'rxjs';
 import { TerminalConnection } from '../types/terminal-connection';
-import { WSInputMessage, WSMessage, WSOutMessage } from '../types/ws-types';
+import { WSInputMessage, WSMessage, WSOutMessage, WSTerminalResizeMessage } from '../types/ws-types';
 import { WebSocketService } from '../services/web-socket.service';
 
 export class WSTerminalConnection implements TerminalConnection {
@@ -45,6 +45,18 @@ export class WSTerminalConnection implements TerminalConnection {
       type: 'Input',
       message: input,
     };
+    this.wss.sendMessage(message);
+  }
+
+  public resize(rows:number, cols:number, height: number, width: number) {
+    const message: WSTerminalResizeMessage = {
+      type:'TerminalResize',
+      terminalId: this.terminalId,
+      rows,
+      cols,
+      height,
+      width
+    }
     this.wss.sendMessage(message);
   }
 

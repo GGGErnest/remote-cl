@@ -1,0 +1,34 @@
+:host {
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+.active-terminals {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 30px 30px;
+}
+
+.terminal {
+    min-width: 200px;
+    max-width: 450px;
+    min-height: 250px;
+    max-height: 500px;
+    // width: 450px;
+    // height: 500px;
+}
+
+terminal-tail {
+    flex-grow: 1;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 10px;
+}

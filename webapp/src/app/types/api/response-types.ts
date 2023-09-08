@@ -5,7 +5,13 @@ export interface BackendResponse {
   result: unknown;
 }
 
-export interface TerminalResponse extends BackendResponse {}
+export interface TerminalResponse extends BackendResponse {
+
+}
+
+export interface TerminalHistoryResponse {
+    result:string[];
+}
 
 export interface CreateTerminalResponse extends BackendResponse {
   result: { terminalId: string };

@@ -1,4 +1,4 @@
-export type WSMessageTypes = 'Output' | 'Prompt' | 'Shell' | "Input";
+export type WSMessageTypes = 'Output' | 'Prompt' | 'Shell' | "Input" | 'TerminalResize';
 
 export interface WSMessage {
     type:WSMessageTypes;
@@ -17,11 +17,12 @@ export interface WSInputMessage extends WSMessage {
     message: string;
 }
 
-export interface WSPromptMessage extends WSMessage {
-    type: 'Prompt';
-    prompt: string;
-    shellError?: string;
-    serverError?: string;
+export interface WSTerminalResizeMessage extends WSMessage {
+    type: 'TerminalResize';
+    rows: number;
+    cols: number;
+    height:number;
+    width:number
 }
 
 export interface WSShellMessage extends WSMessage {

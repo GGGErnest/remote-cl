@@ -1,4 +1,4 @@
-export type WSMessageTypes = 'Output' | 'Input';
+export type WSMessageTypes = 'Output' | 'Input' | 'TerminalResize';
 
 export interface WSMessage {
     type:WSMessageTypes;
@@ -15,6 +15,14 @@ export interface WSOutMessage extends WSMessage {
 export interface WSInputMessage extends WSMessage {
     type: 'Input';
     message: string;
+}
+
+export interface WSTerminalResizeMessage extends WSMessage {
+    type: 'TerminalResize'
+    rows: number;
+    cols: number;
+    height:number;
+    width:number
 }
 
 export type WSState = 'Disconnected' | 'Connecting' | 'Disconnecting' | 'Connected' | "Reconnecting"

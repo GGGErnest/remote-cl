@@ -52,7 +52,7 @@ export class WebSocketService {
   }
 }
 
-public sendMessage(message: WSInputMessage) {
+public sendMessage(message: WSMessage) {
   this._socket?.send(JSON.stringify(message));
 }
 
