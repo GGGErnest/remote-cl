@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -23,7 +23,10 @@ import { TerminalsService } from './services/terminals.service';
 import { WebSocketService } from './services/web-socket.service';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgTerminalModule } from 'ng-terminal';
 import { ServersComponent } from './components/servers/servers.component';
@@ -35,6 +38,9 @@ import { ErrorHandlingInterceptor } from './services/interceptors/error-handling
 import { PromptDialogComponent } from './components/dialog/prompt-dialog/prompt-dialog.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TerminalTailComponent } from './components/terminal-tail/terminal-tail.component';
+import { TitleStrategy } from '@angular/router';
+import { CustomTitleStrategy } from './services/custom-title-strategy.service';
+import { SubPageTitleService } from './services/sub-page-title.service';
 
 @NgModule({
   declarations: [
@@ -67,18 +73,33 @@ import { TerminalTailComponent } from './components/terminal-tail/terminal-tail.
     MatProgressSpinnerModule,
   ],
   providers: [
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline', subscriptSizing:'dynamic'}},
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
+    },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlingInterceptor, multi: true },
-    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true, disableClose:true}},
-     AuthService,
-     TerminalsService,
-     WebSocketService,
-     PermissionsService,
-     TerminalConnectionManagerService,
-     StateService,
-    ],
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorHandlingInterceptor,
+      multi: true,
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: { hasBackdrop: true, disableClose: true },
+    },
+    {
+      provide: TitleStrategy,
+      useClass: CustomTitleStrategy,
+    },
+    SubPageTitleService,
+    AuthService,
+    TerminalsService,
+    WebSocketService,
+    PermissionsService,
+    TerminalConnectionManagerService,
+    StateService,
+  ],
   bootstrap: [AppComponent],
-  schemas:[NO_ERRORS_SCHEMA]
+  schemas: [NO_ERRORS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

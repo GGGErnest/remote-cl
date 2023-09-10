@@ -7,10 +7,10 @@ import { ServersComponent } from './components/servers/servers.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: 'dashboard', component: DashboardComponent, canActivate: [canActivate] },
-  { path: 'servers', component: ServersComponent, canActivate: [canActivate] },
+  { path: 'dashboard', title:'Dashboard' , component: DashboardComponent, canActivate: [canActivate] },
+  { path: 'servers', title:'Servers', component: ServersComponent, canActivate: [canActivate] },
   { path: 'logout', component: LogoutComponent, canActivate: [canActivate] },
-  { path: 'login', component: LoginComponent},
+  { path: 'login', title:'Login', component: LoginComponent},
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 

@@ -4,6 +4,13 @@
     position: relative;
     flex-direction: column;
 }
+
+.toolbar {
+    height: 50px;
+    margin: 10px;
+    border-bottom: solid 1px lightgray;
+}
+
 .active-terminals {
     flex-grow: 1;
     display: flex;
@@ -26,9 +33,4 @@
 
 terminal-tail {
     flex-grow: 1;
-}
-
-h2 {
-    text-align: center;
-    margin-top: 10px;
 }

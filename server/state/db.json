@@ -10,6 +10,24 @@
         "password": "acceso"
       },
       "runningShells": {
+        "test": "test",
+        "test2": "test2"
+      }
+    },
+    {
+      "name": "Home Server",
+      "description": "Home Server",
+      "connectionSettings": {
+        "host": "192.168.178.20",
+        "port": 333,
+        "username": "ernesto",
+        "password": "e9rNBKUCY#wc^Y"
+      },
+      "runningShells": {
+        "1": "1",
+        "cucu": "cucu",
+        "asdasd": "asdasd",
+        "asdas": "asdas"
       }
     }
   ]

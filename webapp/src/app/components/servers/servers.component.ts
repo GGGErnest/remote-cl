@@ -45,7 +45,9 @@ export class ServersComponent implements OnInit {
     this.serverDialog.afterClosed().subscribe((result) => {
       if (result) {
         this._serversService.addServer(result).subscribe((response) => {
-          this._stateService.updateServers(response.result);
+          const servers = this._stateService.servers;
+          servers.push(...response.result);
+          this._stateService.updateServers(servers);
         });
       }
     });

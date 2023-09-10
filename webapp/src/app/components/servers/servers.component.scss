@@ -5,6 +5,7 @@
 .servers {
     margin: 10px;
     display: flex;
+    justify-content: center;
 }
 
 mat-card {
@@ -15,7 +16,8 @@ mat-card {
 .toolbar {
     height: 50px;
     margin: 10px;
-    border-bottom: solid 1px lightgray;
+    display: flex;
+    justify-content: center;
 }
 
 .terminal-item {

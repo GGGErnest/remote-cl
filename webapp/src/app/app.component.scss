@@ -2,6 +2,24 @@
     position: relative;
 }
 
+mat-toolbar {
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.navigation {
+    flex-grow: 1;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+}
+.navigation a {
+    margin-right: 15px;
+}
 .container {
     display: flex;
     flex-direction: column;
@@ -16,4 +34,12 @@
 a {
     color: white;
     text-decoration: none;
+}
+
+
+h2 {
+    height: 40px;
+    text-align: center;
+    border-bottom: solid 1px lightgray;
+    margin: 16px 0 0 0;
 }

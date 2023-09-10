@@ -1,5 +1,5 @@
 <div class="toolbar">
-  <button mat-button color="primary" (click)="addServer()">Add Server</button>
+  <button mat-button color="primary" (click)="addServer()"><mat-icon>add</mat-icon></button>
 </div>
 <div class="servers">
     <mat-card *ngFor="let server of (_stateService.servers$ | async)">
