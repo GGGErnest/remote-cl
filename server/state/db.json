@@ -1,4 +1,5 @@
 {
+  "password":"",
   "servers": [
     {
       "name": "Rasp",
@@ -9,10 +10,7 @@
         "username": "ernesto",
         "password": "acceso"
       },
-      "runningShells": {
-        "test": "test",
-        "test2": "test2"
-      }
+      "runningShells": {}
     },
     {
       "name": "Home Server",
@@ -23,12 +21,7 @@
         "username": "ernesto",
         "password": "e9rNBKUCY#wc^Y"
       },
-      "runningShells": {
-        "1": "1",
-        "cucu": "cucu",
-        "asdasd": "asdasd",
-        "asdas": "asdas"
-      }
+      "runningShells": {}
     }
   ]
 }
