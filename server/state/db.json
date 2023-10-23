@@ -1,5 +1,34 @@
 {
-  "password":"",
+  "authentication": {
+    "secret": "The super secretToken",
+    "refreshAuthToken": "TheSuperREFREsher",
+    "refreshTokens": [
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc3OTU3MzB9.5KwjONCctwOfeV7dFy3QgwmQo1YiULITzV8ptwEM11Q",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDAxNTl9.JPnUoSKl8yyWmsXS-Kbhcwu3xj8rbxdt5xFo_U5_TjU",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDEwNTV9.f8b2p8hBd2eekC9SghvoRmMTzf9haMfNeAEbWzIFnEA",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDE1MjR9.dP9UimW3FFS5k-DbmU8rDwggiHc6c6iHgGHkPeWrLLk",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDI5OTV9.TSKQAnW6QptV01dz4xQDEbitetG_txaDzTE9YG5qutc",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDMyMDl9.cE1Iz9_OXHtZKc2GQKQxXg-Zjel8NXxjgoFQASegAeY",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDMzMjJ9.eE5HEFXgKDOPDfd82kaGS5Yy2ADgoFnoDbw3e10ztdo",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDMzODN9.u7cFcN9CQBsqi4QPBv8WNPfRIAME0gRRnjyLhSLc_tA",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDYyMjl9.P3XFl8arqzpUKoEeQLFwAacoo4oDl-_72bVMHEi77uc",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDY1MTR9.upNGiL3UXzUXiBxcJ05Tb8Yb4bO7BaSEGpZ2DLXgcIY",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4MDY2NzJ9.4JoEBP6gqhDm6TZoQIceTrD5M6kOopCHe-uThfaR75o",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4ODI3NjF9.jDcJhputKSAss4p86dpzIsZcmk4kGRnzvs8hrtWURLs",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4ODQxMjN9.Bmwjn3qFl0Z_mM4FEZ1DlS3olIP-ZSO13d12x0rVUzE",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4ODYzMTh9.OsrLbtXcjuxvOQYr1gFxzQkot8SW40Wk97Q9rb2g3mM",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4ODY4MzV9.tgaYI0IGFXtWxcJCk-5oYr14E14D8tNQjI9HhWD-5EY",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4ODY5NTZ9.UG-YhJD8S-jUkZW2L5RjEYQVU4GhODL-gkrp0Y93Oq0",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTc4ODk5MTh9.Ul1TO0O7e3flLhEIJcME1lumyj3WCKn9cLzYvzlz3Wo",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTgwNTQxMjV9.5NEx5gAEuGehY9uLK-wdNM47bfQ1i3o7MC8SU_VqVeM"
+    ]
+  },
+  "users": {
+    "admin": {
+      "user": "ernesto",
+      "password": "Acceso891123*"
+    }
+  },
   "servers": [
     {
       "name": "Rasp",
@@ -10,7 +39,9 @@
         "username": "ernesto",
         "password": "acceso"
       },
-      "runningShells": {}
+      "runningShells": {
+        "Test": "Test"
+      }
     },
     {
       "name": "Home Server",

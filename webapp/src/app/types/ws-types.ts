@@ -1,8 +1,13 @@
-export type WSMessageTypes = 'Output' | 'Input' | 'TerminalResize';
+export type WSMessageTypes = 'Output' | 'Input' | 'TerminalResize' | 'AuthError';
 
 export interface WSMessage {
     type:WSMessageTypes;
     terminalId:string;
+}
+
+export interface WSAuthErrorMessage extends WSMessage {
+    type: 'AuthError';
+    output: string;
 }
 
 export interface WSOutMessage extends WSMessage {
@@ -15,6 +20,7 @@ export interface WSOutMessage extends WSMessage {
 export interface WSInputMessage extends WSMessage {
     type: 'Input';
     message: string;
+    accessToken:string | null;
 }
 
 export interface WSTerminalResizeMessage extends WSMessage {

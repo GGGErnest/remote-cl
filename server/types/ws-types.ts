@@ -1,4 +1,4 @@
-export type WSMessageTypes = 'Output' | 'Prompt' | 'Shell' | "Input" | 'TerminalResize';
+export type WSMessageTypes = 'Output' | 'Prompt' | 'Shell' | "Input" | 'TerminalResize' | 'AuthError';
 
 export interface WSMessage {
     type:WSMessageTypes;
@@ -12,9 +12,15 @@ export interface WSOutputMessage extends WSMessage {
     serverError?: string;
 }
 
+export interface WSAuthErrorMessage extends WSMessage {
+    type: 'AuthError';
+    output: string;
+}
+
 export interface WSInputMessage extends WSMessage {
     type: 'Input';
     message: string;
+    accessToken: string;
 }
 
 export interface WSTerminalResizeMessage extends WSMessage {

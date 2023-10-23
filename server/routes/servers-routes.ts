@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import lodash from "lodash";
 import { Server } from "../types/server-types.js";
 import { terminalsStorage } from "../state/shells.js";
+import { checkAuth } from "./authentication-routes.js";
 
 function getServers(req: Request, res: Response) {
   const servers = getDB().chain.get("servers").value();
@@ -61,11 +62,15 @@ function deleteServer(req: Request, res: Response) {
 }
 
 export function registerServersRoutes(app: any) {
-  // app.use("/servers", checkAuth);
+  const baseUrl = "/servers/";
 
-  app.get("/servers", getServers);
-  app.post("/servers", addServer);
-  app.patch("/servers/:name", editServer);
-  app.get("/servers/:id", getServer);
-  app.delete("/servers/:name", deleteServer);
+  app.use(baseUrl, checkAuth);
+  app.use(baseUrl + ":name", checkAuth);
+  app.use(baseUrl + ":id", checkAuth);
+
+  app.get(baseUrl, getServers);
+  app.post(baseUrl, addServer);
+  app.patch(baseUrl + ":name", editServer);
+  app.delete(baseUrl + ":name", deleteServer);
+  app.get(baseUrl + ":id", getServer);
 }

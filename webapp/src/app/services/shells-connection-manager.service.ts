@@ -5,6 +5,7 @@ import { WSTerminalConnection } from '../logic/ws-terminal-connection';
 import { StateService } from './state.service';
 import lodash from 'lodash';
 import { Server } from '../types/server-types';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ export class TerminalConnectionManagerService {
 
   constructor(
     private _wsService: WebSocketService,
-    private _stateService: StateService
+    private _stateService: StateService,
+    private _authService: AuthService,
   ) {}
 
   /**
@@ -42,6 +44,7 @@ export class TerminalConnectionManagerService {
           new WSTerminalConnection(
             terminalId,
             this._wsService,
+            this._authService,
             this._onTerminalDestroy.bind(this)
           )
         );

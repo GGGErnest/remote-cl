@@ -34,6 +34,7 @@
     "ws": "^8.13.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.4",
     "@types/lodash": "^4.14.197",
     "@types/lodash-es": "^4.17.8",
     "@types/uuid": "^9.0.2",

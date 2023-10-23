@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import {concatAll, map, } from 'rxjs/operators';
+import {concatAll, map, tap } from 'rxjs/operators';
 import { WebSocketService } from './web-socket.service';
 import { environment } from '../../environments/environment';
 import { WSState } from '../types/ws-types';
 
 export interface Response {
-   message: string;
+    message: string;
     result: boolean;
-    token: string; 
+    accessToken: string;
+    refreshToken:string;
 }
 
 export interface Request { success: boolean, token: string }
@@ -18,10 +19,13 @@ export interface Request { success: boolean, token: string }
   providedIn: 'root'
 })
 export class AuthService {
-  private authTokenKey = 'auth_token';
+  private authTokenKey = 'accessToken';
+  private refreshTokenKey = 'refreshAccessToken';
   private apiUrl = environment.apiUrl;
+  private _isUserLoggedIn = new BehaviorSubject<boolean>(false);
+  public isUserLoggedIn$ = this._isUserLoggedIn.asObservable();
 
-  constructor(private http: HttpClient, private webSocket: WebSocketService) {
+  constructor(private http: HttpClient) {
     this.isUserLoggedIn();
    }
 
@@ -36,19 +40,18 @@ export class AuthService {
     return localStorage.getItem(this.authTokenKey);
    }
 
-   private intiWSConnection(): Observable<WSState> {
-    // Should start the connection
-    this.webSocket.connect();
-    return this.webSocket.state$;
+   getRefreshToken(): string | null {
+    return localStorage.getItem(this.refreshTokenKey);
    }
 
-  login(password:string) {
-    return this.http.post<Response>(this.apiUrl+'login',{password}).pipe(
+  login(password:string, username:string) {
+    return this.http.post<Response>(this.apiUrl+'login',{password, username}).pipe(
       map(response => {
         if (response.result) {
-          localStorage.setItem(this.authTokenKey, response.token);
+          localStorage.setItem(this.authTokenKey, response.accessToken);
+          localStorage.setItem(this.refreshTokenKey, response.refreshToken);
 
-          return this.intiWSConnection();
+          return of(true);
         }
 
         return of(false);
@@ -60,5 +63,13 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this.authTokenKey);
     return this.http.post<Response>(this.apiUrl+'logout', {});
+  }
+
+  refreshToken() {
+    return this.http.post<Response>(this.apiUrl+'token', {token:localStorage.getItem(this.refreshTokenKey)}).pipe(
+      tap((response) => {
+        localStorage.setItem(this.authTokenKey, response.accessToken);
+      })
+    );
   }
 }

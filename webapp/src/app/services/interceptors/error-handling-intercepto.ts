@@ -6,9 +6,7 @@ import { AuthService } from '../auth.service';
 
 @Injectable()
 export class ErrorHandlingInterceptor implements HttpInterceptor {
-
-    constructor() {}
-
+    
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         const cloneRequest = request.clone();
 
@@ -18,7 +16,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             }
 
             const error = err.error.message || err.statusText;
-            return throwError(error);
+            return throwError(() => error);
         }));
     }
 }

@@ -118,8 +118,9 @@ function create(req: Request, res: Response) {
 
 export function registerTerminalRoutes(app: any) {
   const baseUrl = "/terminals/";
-  // app.use("/threads", checkAuth);
-  // app.use("/thread/:threadId", checkAuth);
+  app.use(baseUrl, checkAuth);
+  app.use(baseUrl + ":id/history", checkAuth);
+  app.use(baseUrl + ":id", checkAuth);
 
   app.get(baseUrl, getTerminals);
   app.post(baseUrl, create);

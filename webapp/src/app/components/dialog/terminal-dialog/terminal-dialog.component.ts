@@ -38,14 +38,7 @@ export class TerminalDialogComponent implements AfterViewInit {
     public dialogRef: MatDialogRef<TerminalDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TerminalDialogData,
   ) {
-    this.data.connection.output.subscribe({next:(output)=> {
-      if(output){
-        this.term.write(output);
-      }
-    }, complete:()=> {
-      this.term.underlying?.textarea?.setAttribute('disabled', 'true');
-      this.closeBtn.focus();
-    }})
+    
   }
 
   public close() {
@@ -58,6 +51,15 @@ export class TerminalDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.data.connection.output.subscribe({next:(output)=> {
+      if(output){
+        this.term.write(output);
+      }
+    }, complete:()=> {
+      this.term.underlying?.textarea?.setAttribute('disabled', 'true');
+      this.closeBtn.focus();
+    }})
+    
     this.term.onData().subscribe((input) => this._onTerminalInput(input));
     this.term.underlying?.loadAddon(this._fitAddon);
     this.term.underlying?.loadAddon(this._webGlAddon);

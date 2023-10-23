@@ -9,16 +9,17 @@ import {
 import { TerminalConnection } from '../types/terminal-connection';
 import { WSInputMessage, WSMessage, WSOutMessage, WSTerminalResizeMessage } from '../types/ws-types';
 import { WebSocketService } from '../services/web-socket.service';
+import { AuthService } from '../services/auth.service';
 
 export class WSTerminalConnection implements TerminalConnection {
   private _output = new BehaviorSubject<string | undefined>(undefined);
 
   output = this._output.asObservable();
 
-  constructor(private terminalId: string, private wss: WebSocketService, private _onDestroyCompleted?:(terminalId:string)=> void) {
-    this.wss.messages.pipe(
-      takeWhile(() => wss.state === 'Connected'),
-      filter((wsMessage) => wsMessage.terminalId === this.terminalId),
+  constructor(private _terminalId: string, private _wss: WebSocketService,private readonly _authService: AuthService, private _onDestroyCompleted?:(terminalId:string)=> void) {
+    this._wss.messages.pipe(
+      takeWhile(() => _wss.state === 'Connected'),
+      filter((wsMessage) => wsMessage.terminalId === this._terminalId),
       tap((wsMessage) => this._handleWSMessage(wsMessage))
     ).subscribe();
   }
@@ -41,29 +42,30 @@ export class WSTerminalConnection implements TerminalConnection {
 
   public input(input: string) {
     const message: WSInputMessage = {
-      terminalId: this.terminalId,
+      terminalId: this._terminalId,
       type: 'Input',
       message: input,
+      accessToken: this._authService.getAuthToken(),
     };
-    this.wss.sendMessage(message);
+    this._wss.sendMessage(message);
   }
 
   public resize(rows:number, cols:number, height: number, width: number) {
     const message: WSTerminalResizeMessage = {
       type:'TerminalResize',
-      terminalId: this.terminalId,
+      terminalId: this._terminalId,
       rows,
       cols,
       height,
       width
     }
-    this.wss.sendMessage(message);
+    this._wss.sendMessage(message);
   }
 
   public destroy(): void {
     this._output.complete();
     if(this._onDestroyCompleted){
-      this._onDestroyCompleted(this.terminalId);
+      this._onDestroyCompleted(this._terminalId);
     }
   }
 }
