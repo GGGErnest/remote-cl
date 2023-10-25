@@ -17,20 +17,16 @@ function logout(req: Request, res: Response) {
 }
 
 function login(req: Request, res: Response) {
-  const accessTokenSecret = getDB().chain.get("authentication").value().secret;
-  const { user, password } = req.body;
-  const adminUser = getDB().chain.get("users").value().admin.username;
-  const adminPassword = getDB().chain.get("users").value().admin.password;
+  const {privateKey, refreshTokenPrivateKey} = getDB().chain.get("authentication").value();
 
-  const refreshTokenSecret = getDB()
-    .chain.get("authentication")
-    .value().refreshAuthToken;
+  const { user, password } = req.body;
+  const {username:adminUser, password: adminPassword} = getDB().chain.get("users").value().admin;
 
   if (user === adminUser && password === adminPassword) {
-    const userAccessToken = sign({ username: user }, accessTokenSecret, {
+    const userAccessToken = sign({ username: user }, privateKey, {
       expiresIn: tokenExpirationTime,
     });
-    const userRefreshToken = sign({ username: user }, refreshTokenSecret);
+    const userRefreshToken = sign({ username: user }, refreshTokenPrivateKey);
     getDB()
       .chain.get("authentication")
       .value()

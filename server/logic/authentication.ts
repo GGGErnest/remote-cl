@@ -12,7 +12,7 @@ const tokenExpirationTime = "1m";
 export function checkReqAuth(req: Request, res: Response, next: NextFunction){
     const authHeader = req.headers.authorization;
 
-    const accessTokenSecret = getDB().chain.get("authentication").value().secret;
+    const accessTokenSecret = getDB().chain.get("authentication").value().privateKey;
   
     if (authHeader) {
       const token = authHeader.split(" ")[1];
@@ -39,7 +39,7 @@ export function checkReqAuth(req: Request, res: Response, next: NextFunction){
 
 
 export function checkWSAuthentication(message: WSInputMessage): boolean {
-    const accessTokenSecret = getDB().chain.get("authentication").value().secret;
+    const accessTokenSecret = getDB().chain.get("authentication").value().privateKey;
   
     if (message.accessToken) {
       try {
@@ -75,33 +75,26 @@ export function checkWSAuthentication(message: WSInputMessage): boolean {
     console.warn("Refresh Token endpoint was called");
   
     const { token } = req.body;
-    const accessTokenSecret = getDB().chain.get("authentication").value().secret;
   
     if (!token) {
       return res.sendStatus(401);
     }
   
-    const refreshTokens = getDB()
-      .chain.get("authentication")
-      .value().refreshToken;
+    const {privateKey, refreshTokenPrivateKey, refreshToken} = getDB().chain.get("authentication").value();
   
-    if (!refreshTokens.includes(token)) {
+    if (refreshToken !== token) {
       return res.sendStatus(403);
     }
   
-    const refreshTokenSecret = getDB()
-      .chain.get("authentication")
-      .value().refreshAuthToken;
-  
     verify(
       token,
-      refreshTokenSecret,
+      refreshTokenPrivateKey,
       (errors: VerifyErrors | null, user: any) => {
         if (errors) {
           return res.sendStatus(403);
         }
   
-        const accessToken = sign({ username: user.username }, accessTokenSecret, {
+        const accessToken = sign({ username: user.username }, privateKey, {
           expiresIn: tokenExpirationTime,
         });
   

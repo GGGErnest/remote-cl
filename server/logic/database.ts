@@ -13,8 +13,8 @@ class LowWithLodash<T> extends Low<T> {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const defaultData: DataBaseSchema = {
-   authentication:{refreshAuthToken:'DefaultR3FreshTo3ken*s',refreshToken:"",secret:'Tok3nsSe@crets*2md77621ma99912m3m*&^43@'},
-   users:{admin:{username:'ernesto',password:'Acceso891123*'}},
+   authentication:{refreshTokenPrivateKey:'',refreshToken:"", privateKey:'Tok3nsSe@crets*2md77621ma99912m3m*&^43@'},
+   users:{admin:{username:'admin',password:'supersavepassword'}},
    servers: [] };
 let db: LowWithLodash<DataBaseSchema>;
 

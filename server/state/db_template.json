@@ -1,0 +1,15 @@
+{
+  "authentication": {
+    "privateKey": "",
+    "refreshTokenPrivateKey": "",
+    "refreshToken": ""
+  },
+  "users": {
+    "admin": {
+      "user": "",
+      "password": ""
+    }
+  },
+  "servers": [
+  ]
+}

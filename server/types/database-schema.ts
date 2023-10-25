@@ -2,8 +2,8 @@ import { Server } from "./server-types";
 
 export interface DataBaseSchema {
     authentication: {
-        secret:string;
-        refreshAuthToken:string;
+        privateKey:string;
+        refreshTokenPrivateKey:string;
         refreshToken:string;
     },
     users: {
