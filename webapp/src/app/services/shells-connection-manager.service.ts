@@ -6,6 +6,7 @@ import { StateService } from './state.service';
 import lodash from 'lodash';
 import { Server } from '../types/server-types';
 import { AuthService } from './auth.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +15,10 @@ export class TerminalConnectionManagerService {
   private _terminalsConnection = new Map<string, TerminalConnection>();
 
   constructor(
-    private _wsService: WebSocketService,
-    private _stateService: StateService,
-    private _authService: AuthService,
+    private readonly _wsService: WebSocketService,
+    private readonly _stateService: StateService,
+    private readonly _authService: AuthService,
+    private readonly _notificaTionService: NotificationService
   ) {}
 
   /**
@@ -45,6 +47,7 @@ export class TerminalConnectionManagerService {
             terminalId,
             this._wsService,
             this._authService,
+            this._notificaTionService,
             this._onTerminalDestroy.bind(this)
           )
         );

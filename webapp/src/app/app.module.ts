@@ -38,9 +38,12 @@ import { ErrorHandlingInterceptor } from './services/interceptors/error-handling
 import { PromptDialogComponent } from './components/dialog/prompt-dialog/prompt-dialog.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TerminalTailComponent } from './components/terminal-tail/terminal-tail.component';
+import { MatSnackBarModule} from '@angular/material/snack-bar';
 import { TitleStrategy } from '@angular/router';
 import { CustomTitleStrategy } from './services/custom-title-strategy.service';
 import { SubPageTitleService } from './services/sub-page-title.service';
+import { InfoComponent } from './components/notifications/info/info.component';
+import { ErrorComponent } from './components/notifications/error/error.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +56,8 @@ import { SubPageTitleService } from './services/sub-page-title.service';
     PromptDialogComponent,
     DashboardComponent,
     TerminalTailComponent,
+    InfoComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -71,6 +76,7 @@ import { SubPageTitleService } from './services/sub-page-title.service';
     MatCardModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   providers: [
     {

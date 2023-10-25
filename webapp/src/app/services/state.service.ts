@@ -11,6 +11,9 @@ export class StateService {
   private _servers = new BehaviorSubject<Server[]>([]);
   servers$ = this._servers.asObservable();
 
+  /**
+   * Returns a copy of the servers
+   */
   get servers(): Server[] {
     return lodash.cloneDeep(this._servers.value);
   }

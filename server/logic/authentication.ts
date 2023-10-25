@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, response } from "express";
 import { getDB } from "../logic/database.js";
 import jwt, { VerifyErrors } from "jsonwebtoken";
-import { WSInputMessage } from "../types/ws-types.js";
+import { WSAuthErrorMessage, WSInputMessage } from "../types/ws-types.js";
+import { broadcast } from "../ws-server.js";
 
 const { sign, verify } = jwt;
 
@@ -9,34 +10,35 @@ const tokenExpirationTime = "1m";
 
 // Middleware for checking if user is authenticated
 export function checkReqAuth(req: Request, res: Response, next: NextFunction){
-  const authHeader = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-  const accessTokenSecret = getDB().chain.get("authentication").value().secret;
-
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
-
-    verify(token, accessTokenSecret, (err: VerifyErrors | null, user) => {
-      if (err?.name === 'TokenExpiredError' ) {
-        return res.status(403).json({ message: "TokenExpiredError" });
-      }
-
-      if(err?.name === 'JsonWebTokenError') {
-        return res.status(403).json({ message: "JsonWebTokenError" });
-      }
-
-      if(err) {
-        res.sendStatus(403);
-      }
-
-      next();
-    });
-  } else {
-    res.sendStatus(401);
-  }
+    const accessTokenSecret = getDB().chain.get("authentication").value().secret;
+  
+    if (authHeader) {
+      const token = authHeader.split(" ")[1];
+  
+      verify(token, accessTokenSecret, (err: VerifyErrors | null, user) => {
+        if (err?.name === 'TokenExpiredError' ) {
+          return res.status(403).json({ message: "TokenExpiredError" });
+        }
+  
+        if(err?.name === 'JsonWebTokenError') {
+          return res.status(403).json({ message: "JsonWebTokenError" });
+        }
+  
+        if(err) {
+          res.sendStatus(403);
+        }
+  
+        next();
+      });
+    } else {
+      res.sendStatus(401).json({ message: "NoAuthenticationToken" });
+    }
 };
 
-export function checkWSMessageAuth(message: WSInputMessage): boolean {
+
+export function checkWSAuthentication(message: WSInputMessage): boolean {
     const accessTokenSecret = getDB().chain.get("authentication").value().secret;
   
     if (message.accessToken) {
@@ -66,11 +68,12 @@ export function checkWSMessageAuth(message: WSInputMessage): boolean {
       }
     }
     return false;
-}
+  }
 
+  export function refreshAccessToken(req: Request, res: Response) {
 
-function refreshAccessToken(req: Request, res: Response) {
     console.warn("Refresh Token endpoint was called");
+  
     const { token } = req.body;
     const accessTokenSecret = getDB().chain.get("authentication").value().secret;
   
@@ -80,7 +83,7 @@ function refreshAccessToken(req: Request, res: Response) {
   
     const refreshTokens = getDB()
       .chain.get("authentication")
-      .value().refreshTokens;
+      .value().refreshToken;
   
     if (!refreshTokens.includes(token)) {
       return res.sendStatus(403);
@@ -108,4 +111,4 @@ function refreshAccessToken(req: Request, res: Response) {
         });
       }
     );
-}
+  }

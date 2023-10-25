@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { WSAuthErrorMessage, WSInputMessage, WSMessage, WSState } from '../types/ws-types';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class WebSocketService {
   public messages = this._messageReceived.asObservable();
   state$ = this._state.asObservable();
 
-  constructor(private readonly _authService: AuthService) {
+  constructor(private readonly _authService: AuthService, private _notificationService: NotificationService) {
 
   }
 
@@ -35,7 +36,7 @@ export class WebSocketService {
     this._socket.addEventListener('message', (event) => this._handleMessage(event));
 
     this._socket.addEventListener('error',(error) => {
-      console.error("WebSocket Error ", error);
+      this._notificationService.showError('WebSocket Error. Please contact the administrator for more info on how to fix it.');
     });
 
     this._socket.addEventListener('close', () => {
@@ -47,22 +48,23 @@ export class WebSocketService {
 
 private _handleMessage(event: MessageEvent<any>): void {
    
-  console.log('Websocket Message', event);
   let message: WSMessage;
 
   // in case the data sent can't be parsed
   try {
     message = JSON.parse(event.data);
 
-    //handling authentication errors
+    // handling authentication errors although in theory it should not happen since the app wil keep
+    // refreshing the token meanwhile is active
     if(message.type === 'AuthError' && (message as WSAuthErrorMessage).output === 'TokenExpired') {
-        this._authService.refreshToken();
+        this._authService.logout();
     }
 
     this._messageReceived.next(message);
-    console.log("WS -> Message Received: ", message);
+  
   } catch (error){
-    console.log('Message couldnt be parsed', event.data);
+
+    console.log('Message could not be parsed', event.data);
   }
 
 }

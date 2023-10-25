@@ -1,47 +1,14 @@
 import WebSocket, { WebSocketServer } from "ws";
 import {
-  WSAuthErrorMessage,
   WSInputMessage,
   WSMessage,
 } from "./types/ws-types.js";
 import { terminalsStorage } from "./state/shells.js";
-import { getDB } from "./logic/database.js";
 import jwt from "jsonwebtoken";
+import { checkWSAuthentication } from './logic/authentication.js';
 const { verify } = jwt;
 
 export let wss: WebSocketServer | undefined;
-
-function checkAuthentication(message: WSInputMessage): boolean {
-  const accessTokenSecret = getDB().chain.get("authentication").value().secret;
-
-  if (message.accessToken) {
-    try {
-      verify(message.accessToken, accessTokenSecret);
-      return true;
-    } catch (err: any) {
-      console.warn("Auth validation result", err);
-      switch (err.name) {
-        case "TokenExpiredError":
-          broadcast({
-            type: "AuthError",
-            output: "TokenExpired",
-          } as WSAuthErrorMessage);
-          break;
-        case "JsonWebTokenError":
-          broadcast({
-            type: "AuthError",
-            output: "JsonWebTokenError",
-          } as WSAuthErrorMessage);
-          break;
-        default:
-          break;
-      }
-
-      return false;
-    }
-  }
-  return false;
-}
 
 export function startWS(host = "localhost", port = 3001) {
   wss = new WebSocketServer({ host, port });
@@ -49,7 +16,7 @@ export function startWS(host = "localhost", port = 3001) {
     ws.on("message", (message: string) => {
       try {
         const inputMessage = JSON.parse(message) as WSInputMessage;
-        if (checkAuthentication(inputMessage)) {
+        if (checkWSAuthentication(inputMessage)) {
           console.warn("MEssage sent ->>>", inputMessage);
           const shell = terminalsStorage.get(inputMessage.terminalId);
           shell?.handleMessage(inputMessage);

@@ -58,10 +58,6 @@ export class SSHTerminal implements Shell {
 
   public handleMessage(message: WSMessage) {
     switch(message.type){
-      case 'TerminalResize': 
-      const resizeMessage = (message as WSTerminalResizeMessage);
-      // this.shellWriteStream?.setWindow(resizeMessage.rows, resizeMessage.cols)
-      break;
       case 'Input':
         this.write((message as WSInputMessage).message);
         break;
@@ -149,6 +145,12 @@ export class SSHTerminal implements Shell {
         broadcast(output);
       } else {
         console.error(`Error: ${err.message}`);
+        const errorMessage: WSOutputMessage = {
+          type:'Output',
+          terminalId:this.shellId,
+          shellError: err.message,
+        }
+        broadcast(errorMessage);
       }
     });
   }

@@ -9,6 +9,7 @@ import {
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../auth.service';
+import { NotificationService } from '../notification.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -32,56 +33,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authRequest).pipe(
       catchError((err) => {
-        if ((err === 'TokenExpiredError' || err === 'JsonWebTokenError')
-         && !authRequest.url.includes('login')) {
-            return this.handleAuthenticationErrors(authRequest, next)
+        if(!authRequest.url.includes('login')) {
+            this.authService.handleAuthenticationError(err);
         }
-
-        if(err === 'NoAuthenticationToken') {
-          this.authService.logout();
-        }
-
+        
         return throwError(() => err);
       })
-    );
-  }
-
-  private handleAuthenticationErrors(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ) {
-    console.log('Authentication error-handling');
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
-
-      const canRefresh = !!this.authService.getRefreshToken();
-
-      if (canRefresh) {
-        console.log('Refreshing the token');
-        return this.authService.refreshToken().pipe(
-          switchMap((response) => {
-            this.isRefreshing = false;
-            this.refreshTokenSubject.next(response.accessToken);
-
-            return next.handle(
-              this.addTokenHeader(request, response.accessToken)
-            );
-          }),
-          catchError((err) => {
-            this.isRefreshing = false;
-
-            this.authService.logout();
-            return throwError(() => err);
-          })
-        );
-      }
-    }
-
-    return this.refreshTokenSubject.pipe(
-      filter((token) => token !== null),
-      take(1),
-      switchMap((token) => next.handle(this.addTokenHeader(request, token)))
     );
   }
 

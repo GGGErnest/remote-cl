@@ -10,13 +10,17 @@ import { TerminalConnection } from '../types/terminal-connection';
 import { WSInputMessage, WSMessage, WSOutMessage, WSTerminalResizeMessage } from '../types/ws-types';
 import { WebSocketService } from '../services/web-socket.service';
 import { AuthService } from '../services/auth.service';
+import { NotificationService } from '../services/notification.service';
 
 export class WSTerminalConnection implements TerminalConnection {
   private _output = new BehaviorSubject<string | undefined>(undefined);
 
   output = this._output.asObservable();
 
-  constructor(private _terminalId: string, private _wss: WebSocketService,private readonly _authService: AuthService, private _onDestroyCompleted?:(terminalId:string)=> void) {
+  constructor(private _terminalId: string,
+     private _wss: WebSocketService,private readonly _authService: AuthService,
+     private readonly _notificationService: NotificationService,
+      private _onDestroyCompleted?:(terminalId:string)=> void) {
     this._wss.messages.pipe(
       takeWhile(() => _wss.state === 'Connected'),
       filter((wsMessage) => wsMessage.terminalId === this._terminalId),
@@ -26,18 +30,22 @@ export class WSTerminalConnection implements TerminalConnection {
 
   private _handleWSMessage(wsMessage: WSMessage) {
     const outputMessage = wsMessage as WSOutMessage;
-    const message =
-      outputMessage.output ??
+
+    const errorMessage =
       outputMessage?.shellError ??
       outputMessage.serverError;
 
-    if (message) {
-        if(message === 'Terminal Closed'){
+    if(errorMessage) {
+      this._notificationService.showError(`Error in terminal ${outputMessage.terminalId} ${errorMessage}`)
+      return;
+    }
+
+    if(outputMessage.output && outputMessage.output === 'Terminal Closed'){
             this.destroy();
             return;
-        }
-      this._output.next(message);
     }
+    
+      this._output.next(outputMessage.output);
   }
 
   public input(input: string) {

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { checkAuth } from "./authentication-routes.js";
 import { terminalsStorage } from "../state/shells.js";
 import { getDB } from "../logic/database.js";
 import { SSHTerminal } from "../logic/ssh-shell.js";
 import { Server } from "../types/server-types.js";
 import lodash from "lodash";
+import { checkReqAuth } from "../logic/authentication.js";
 
 export function deleteTerminal(terminalId: string) {
   const terminal = terminalsStorage.get(terminalId);
@@ -118,9 +118,9 @@ function create(req: Request, res: Response) {
 
 export function registerTerminalRoutes(app: any) {
   const baseUrl = "/terminals/";
-  app.use(baseUrl, checkAuth);
-  app.use(baseUrl + ":id/history", checkAuth);
-  app.use(baseUrl + ":id", checkAuth);
+  app.use(baseUrl, checkReqAuth);
+  app.use(baseUrl + ":id/history", checkReqAuth);
+  app.use(baseUrl + ":id", checkReqAuth);
 
   app.get(baseUrl, getTerminals);
   app.post(baseUrl, create);

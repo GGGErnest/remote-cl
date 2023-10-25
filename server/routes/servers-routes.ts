@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import lodash from "lodash";
 import { Server } from "../types/server-types.js";
 import { terminalsStorage } from "../state/shells.js";
-import { checkAuth } from "./authentication-routes.js";
+import { checkReqAuth } from "../logic/authentication.js";
 
 function getServers(req: Request, res: Response) {
   const servers = getDB().chain.get("servers").value();
@@ -64,9 +64,9 @@ function deleteServer(req: Request, res: Response) {
 export function registerServersRoutes(app: any) {
   const baseUrl = "/servers/";
 
-  app.use(baseUrl, checkAuth);
-  app.use(baseUrl + ":name", checkAuth);
-  app.use(baseUrl + ":id", checkAuth);
+  app.use(baseUrl, checkReqAuth);
+  app.use(baseUrl + ":name", checkReqAuth);
+  app.use(baseUrl + ":id", checkReqAuth);
 
   app.get(baseUrl, getServers);
   app.post(baseUrl, addServer);

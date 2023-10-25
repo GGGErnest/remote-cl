@@ -76,7 +76,7 @@ mat-card-header button {
 .terminal-actions {
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: baseline;
     flex-grow: 1;
 }

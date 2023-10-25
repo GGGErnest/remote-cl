@@ -4,7 +4,7 @@ export interface DataBaseSchema {
     authentication: {
         secret:string;
         refreshAuthToken:string;
-        refreshTokens:string[];
+        refreshToken:string;
     },
     users: {
         admin: {
