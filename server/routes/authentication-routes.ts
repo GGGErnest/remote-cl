@@ -18,7 +18,7 @@ function logout(req: Request, res: Response) {
 
 function login(req: Request, res: Response) {
   const {privateKey, refreshTokenPrivateKey} = getDB().chain.get("authentication").value();
-
+  
   const { user, password } = req.body;
   const {username:adminUser, password: adminPassword} = getDB().chain.get("users").value().admin;
 

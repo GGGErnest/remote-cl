@@ -1,3 +1,4 @@
 # System files
 .DS_Store
 Thumbs.db
+server/state/db.json

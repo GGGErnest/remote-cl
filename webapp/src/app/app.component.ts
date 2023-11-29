@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { WebSocketService } from './services/web-socket.service';
 import { tap } from 'rxjs';
 import { SubPageTitleService } from './services/sub-page-title.service';
@@ -31,19 +30,27 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._authService.isUserLoggedIn$.subscribe({next:(isUserLoggedIn)=> {
-      if(isUserLoggedIn) {
+    this._authService.isUserLoggedIn$.subscribe(isUserLoggedIn => {
+      if (isUserLoggedIn) {
         this._ws.connect();
-        
-        this._authService.refreshToken().subscribe();
-        this._intervalId = setInterval(()=> {
-          this._authService.refreshToken().subscribe();
-        }, this._refreshAccessTokenInterval);
-
+        this.startRefreshingToken();
       } else {
-        clearInterval(this._intervalId);
+        this.stopRefreshingToken();
       }
-    }})
+    });
+  }
+
+  startRefreshingToken() {
+    this.refreshToken();
+    this._intervalId = setInterval(() => this.refreshToken(), this._refreshAccessTokenInterval);
+  }
+  
+  stopRefreshingToken() {
+    clearInterval(this._intervalId);
+  }
+  
+  refreshToken() {
+    this._authService.refreshToken().subscribe();
   }
 
   ngOnDestroy(): void {

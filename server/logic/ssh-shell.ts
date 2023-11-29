@@ -57,6 +57,7 @@ export class SSHTerminal implements Shell {
   }
 
   public handleMessage(message: WSMessage) {
+    // only one for now but will come more later
     switch(message.type){
       case 'Input':
         this.write((message as WSInputMessage).message);
@@ -65,8 +66,7 @@ export class SSHTerminal implements Shell {
   }
 
   public write(command: string) {
-    if (this.shellWriteStream && this.shellWriteStream.writable) {
-      // console.log('Writing to terminal', command);
+    if (this.shellWriteStream?.writable) {
       this.shellWriteStream?.write(command);
     }
   }
@@ -120,7 +120,6 @@ export class SSHTerminal implements Shell {
         // listening for data coming from the terminal on the host
         stream.on("data", (data: string) => {
           const output = data.toString();
-          // console.log("Data received from shell " + this.shellId + " ", output);
           const message: WSOutputMessage = {
             type: "Output",
             terminalId: this.shellId,
@@ -136,15 +135,13 @@ export class SSHTerminal implements Shell {
 
     this.connection.on("error", (err) => {
       if (err.level === "client-authentication") {
-        console.log('Auth error', err);
-        const output: WSOutputMessage = {
-            type:'Output',
-            terminalId: this.shellId,
-            output: 'Please enter the password'
-        } 
-        broadcast(output);
+        const errorMessage: WSOutputMessage = {
+          type:'Output',
+          terminalId:this.shellId,
+          shellError: 'Failed to authenticate into the Server',
+        }
+        broadcast(errorMessage);
       } else {
-        console.error(`Error: ${err.message}`);
         const errorMessage: WSOutputMessage = {
           type:'Output',
           terminalId:this.shellId,

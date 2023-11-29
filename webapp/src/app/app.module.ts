@@ -38,7 +38,10 @@ import { ErrorHandlingInterceptor } from './services/interceptors/error-handling
 import { PromptDialogComponent } from './components/dialog/prompt-dialog/prompt-dialog.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TerminalTailComponent } from './components/terminal-tail/terminal-tail.component';
-import { MatSnackBarModule} from '@angular/material/snack-bar';
+import {
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+  MatSnackBarModule,
+} from '@angular/material/snack-bar';
 import { TitleStrategy } from '@angular/router';
 import { CustomTitleStrategy } from './services/custom-title-strategy.service';
 import { SubPageTitleService } from './services/sub-page-title.service';
@@ -57,7 +60,7 @@ import { ErrorComponent } from './components/notifications/error/error.component
     DashboardComponent,
     TerminalTailComponent,
     InfoComponent,
-    ErrorComponent
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,7 +79,7 @@ import { ErrorComponent } from './components/notifications/error/error.component
     MatCardModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   providers: [
     {
@@ -93,6 +96,7 @@ import { ErrorComponent } from './components/notifications/error/error.component
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: { hasBackdrop: true, disableClose: true },
     },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
     {
       provide: TitleStrategy,
       useClass: CustomTitleStrategy,
