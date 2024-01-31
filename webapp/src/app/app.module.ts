@@ -47,6 +47,7 @@ import { CustomTitleStrategy } from './services/custom-title-strategy.service';
 import { SubPageTitleService } from './services/sub-page-title.service';
 import { InfoComponent } from './components/notifications/info/info.component';
 import { ErrorComponent } from './components/notifications/error/error.component';
+import { IpInputComponent } from './components/ui-elements/ip-input/ip-input.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { ErrorComponent } from './components/notifications/error/error.component
     TerminalTailComponent,
     InfoComponent,
     ErrorComponent,
+    IpInputComponent,
   ],
   imports: [
     BrowserModule,

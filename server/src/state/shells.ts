@@ -1,4 +1,3 @@
-import { ChildProcessWithoutNullStreams } from "child_process";
 import { SSHTerminal } from "../logic/ssh-shell.js";
 
 export class TerminalsStorage {

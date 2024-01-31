@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction, response } from "express";
-import { getDB } from "../logic/database.js";
+import { Request, Response, NextFunction } from "express";
+import { getDB } from "./database.js";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 import { WSAuthErrorMessage, WSInputMessage } from "../types/ws-types.js";
 import { broadcast } from "../ws-server.js";
@@ -55,7 +55,7 @@ export function checkWSAuthentication(message: WSInputMessage): boolean {
         TokenExpiredError: "TokenExpired",
         JsonWebTokenError: "JsonWebTokenError",
       };
-      const output = errorMap[err.name] || "";
+      const output = (errorMap as any)[err.name] || "";
       broadcast({
         type: "AuthError",
         output,

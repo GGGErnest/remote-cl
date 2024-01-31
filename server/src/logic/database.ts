@@ -33,9 +33,11 @@ function cleanUpTerminalsWhenStartingTheServer() {
 export function initDB() {
   // db.json file path
   const file = join(__dirname, "../state/db.json");
+  console.log('DB file', file);
 
   // Configure lowdb to write data to JSON file
   const adapter = new JSONFile<DataBaseSchema>(file);
+  console.log('DB adapter', adapter);
   db = new LowWithLodash(adapter, defaultData);
   db.read().then(() => cleanUpTerminalsWhenStartingTheServer());
 }

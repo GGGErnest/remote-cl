@@ -9,7 +9,7 @@ const tokenExpirationTime = "10m";
 
 function logout(req: Request, res: Response) {
   let authentication = getDB().chain.get("authentication").value();
-  authentication.refreshToken = '';
+  authentication.refreshToken = "";
   getDB().write();
   return res
     .status(200)
@@ -17,31 +17,32 @@ function logout(req: Request, res: Response) {
 }
 
 function login(req: Request, res: Response) {
-  const {privateKey, refreshTokenPrivateKey} = getDB().chain.get("authentication").value();
-  
+  const { privateKey, refreshTokenPrivateKey } = getDB()
+    .chain.get("authentication")
+    .value();
+
   const { user, password } = req.body;
-  const {username:adminUser, password: adminPassword} = getDB().chain.get("users").value().admin;
+  const { username: adminUser, password: adminPassword } = getDB()
+    .chain.get("users")
+    .value().admin;
+
+  console.log("Authentication Data ", adminUser, adminPassword);
 
   if (user === adminUser && password === adminPassword) {
     const userAccessToken = sign({ username: user }, privateKey, {
       expiresIn: tokenExpirationTime,
     });
     const userRefreshToken = sign({ username: user }, refreshTokenPrivateKey);
-    getDB()
-      .chain.get("authentication")
-      .value()
-      .refreshToken = userRefreshToken;
+    getDB().chain.get("authentication").value().refreshToken = userRefreshToken;
 
     getDB().write();
 
-    res
-      .status(200)
-      .json({
-        message: "Logged in successfully",
-        accessToken: userAccessToken,
-        refreshToken: userRefreshToken,
-        result: true,
-      });
+    res.status(200).json({
+      message: "Logged in successfully",
+      accessToken: userAccessToken,
+      refreshToken: userRefreshToken,
+      result: true,
+    });
   } else {
     res.status(401).json({ message: "Incorrect password", result: false });
   }

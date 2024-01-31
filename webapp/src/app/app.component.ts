@@ -30,14 +30,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._authService.isUserLoggedIn$.subscribe(isUserLoggedIn => {
-      if (isUserLoggedIn) {
-        this._ws.connect();
-        this.startRefreshingToken();
-      } else {
-        this.stopRefreshingToken();
-      }
-    });
+    this._authService.isUserLoggedIn$.pipe(
+      tap(isUserLoggedIn => {
+        if (isUserLoggedIn) {
+          this._ws.connect();
+          this.startRefreshingToken();
+        } else {
+          this.stopRefreshingToken();
+        }
+      })
+    ).subscribe();
   }
 
   startRefreshingToken() {

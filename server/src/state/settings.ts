@@ -1,7 +1,6 @@
 import 'dotenv/config';
 
 const WS_AND_W_SERVER_HOST = process.env.host?? 'localhost';
-
 export const settings = {
     ssh: {
         host: process.env.sshHost,
@@ -20,3 +19,6 @@ export const settings = {
     privateKey: process.env.privateKey,
     passphrase: process.env.passphrase
 };
+
+
+console.log('Settings', settings)

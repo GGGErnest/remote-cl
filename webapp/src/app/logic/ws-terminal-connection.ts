@@ -1,13 +1,16 @@
 import {
   BehaviorSubject,
-  Observable,
   filter,
-  takeUntil,
   takeWhile,
   tap,
 } from 'rxjs';
 import { TerminalConnection } from '../types/terminal-connection';
-import { WSInputMessage, WSMessage, WSOutMessage, WSTerminalResizeMessage } from '../types/ws-types';
+import {
+  WSInputMessage,
+  WSMessage,
+  WSOutMessage,
+  WSTerminalResizeMessage,
+} from '../types/ws-types';
 import { WebSocketService } from '../services/web-socket.service';
 import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../services/notification.service';
@@ -17,35 +20,40 @@ export class WSTerminalConnection implements TerminalConnection {
 
   output = this._output.asObservable();
 
-  constructor(private _terminalId: string,
-     private _wss: WebSocketService,private readonly _authService: AuthService,
-     private readonly _notificationService: NotificationService,
-      private _onDestroyCompleted?:(terminalId:string)=> void) {
-    this._wss.messages.pipe(
-      takeWhile(() => _wss.state === 'Connected'),
-      filter((wsMessage) => wsMessage.terminalId === this._terminalId),
-      tap((wsMessage) => this._handleWSMessage(wsMessage))
-    ).subscribe();
+  constructor(
+    private readonly _terminalId: string,
+    private readonly _wss: WebSocketService,
+    private readonly _authService: AuthService,
+    private readonly _notificationService: NotificationService,
+    private _onDestroyCompleted?: (terminalId: string) => void
+  ) {
+    this._wss.messages
+      .pipe(
+        takeWhile(() => _wss.state === 'Connected'),
+        filter((wsMessage) => wsMessage.terminalId === this._terminalId),
+        tap((wsMessage) => this._handleWSMessage(wsMessage))
+      )
+      .subscribe();
   }
 
   private _handleWSMessage(wsMessage: WSMessage) {
     const outputMessage = wsMessage as WSOutMessage;
 
-    const errorMessage =
-      outputMessage?.shellError ??
-      outputMessage.serverError;
+    const errorMessage = outputMessage?.shellError ?? outputMessage.serverError;
 
-    if(errorMessage) {
-      this._notificationService.showError(`Error in terminal ${outputMessage.terminalId} ${errorMessage}`)
+    if (errorMessage) {
+      this._notificationService.showError(
+        `Error in terminal ${outputMessage.terminalId} ${errorMessage}`
+      );
       return;
     }
 
-    if(outputMessage.output && outputMessage.output === 'Terminal Closed'){
-            this.destroy();
-            return;
+    if (outputMessage.output && outputMessage.output === 'Terminal Closed') {
+      this.destroy();
+      return;
     }
-    
-      this._output.next(outputMessage.output);
+
+    this._output.next(outputMessage.output);
   }
 
   public input(input: string) {
@@ -58,21 +66,21 @@ export class WSTerminalConnection implements TerminalConnection {
     this._wss.sendMessage(message);
   }
 
-  public resize(rows:number, cols:number, height: number, width: number) {
+  public resize(rows: number, cols: number, height: number, width: number) {
     const message: WSTerminalResizeMessage = {
-      type:'TerminalResize',
+      type: 'TerminalResize',
       terminalId: this._terminalId,
       rows,
       cols,
       height,
-      width
-    }
+      width,
+    };
     this._wss.sendMessage(message);
   }
 
   public destroy(): void {
     this._output.complete();
-    if(this._onDestroyCompleted){
+    if (this._onDestroyCompleted) {
       this._onDestroyCompleted(this._terminalId);
     }
   }

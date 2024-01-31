@@ -1,0 +1,15 @@
+{
+  "authentication": {
+    "privateKey": "DSAasdsAASAD678668)(**&&gbvajhvd444",
+    "refreshTokenPrivateKey": "jnsKHVUYvv5512bs*7%$#V@@$$",
+    "refreshToken": ""
+  },
+  "users": {
+    "admin": {
+      "user": "ernesto",
+      "password": "Acceso891123*"
+    }
+  },
+  "servers": [
+  ]
+}
