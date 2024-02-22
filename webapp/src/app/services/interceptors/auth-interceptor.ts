@@ -13,11 +13,6 @@ import { NotificationService } from '../notification.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null
-  );
-
   constructor(private authService: AuthService) {}
 
   intercept(
@@ -33,7 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authRequest).pipe(
       catchError((err) => {
-        if(!authRequest.url.includes('login')) {
+        if(!authRequest.url.includes('login') && (err.status === 401 || err.status === 403)) {
             this.authService.handleAuthenticationError(err);
         }
         

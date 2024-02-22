@@ -29,7 +29,7 @@ export class AuthService {
   public isUserLoggedIn$ = this._isUserLoggedIn.asObservable();
 
   constructor(
-    private http: HttpClient,
+    private http: HttpClient, 
     private readonly _notificationService: NotificationService,
     private readonly _router: Router
   ) {

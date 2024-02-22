@@ -19,7 +19,7 @@ export class LoginComponent {
     const {password, username} = this.form.value;
     this.authService.login(password, username).subscribe(isLoggedIn => {
       if(isLoggedIn){
-        this.router.navigate(['/servers']);
+        this.router.navigate(['/dashboard']);
       } else {
         this.router.navigate(['/login']);
       }

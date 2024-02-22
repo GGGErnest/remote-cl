@@ -42,4 +42,11 @@ export class AddServerDialogComponent {
   public cancel() {
     this.dialogRef.close();
   }
+
+  public save() {
+    if(this.serverFormGroup.invalid) {
+      return;
+    }
+    this.dialogRef.close(this.serverFormGroup.value);
+  }
 }

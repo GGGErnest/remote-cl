@@ -25,20 +25,28 @@
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Port</mat-label>
-                <input matInput formControlName="port" type="number">
+                <input matInput required formControlName="port" type="number">
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Username</mat-label>
-                <input matInput formControlName="username" type="text">
+                <input matInput required formControlName="username" type="text">
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Password</mat-label>
-                <input matInput formControlName="password" type="password">
+                <input matInput required formControlName="password" type="password">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Public Key</mat-label>
+                <textarea matInput required formControlName="pkey"></textarea>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Public Key</mat-label>
+                <mat-checkbox matInput type="checkbox" required formControlName="usePKey"/>
             </mat-form-field>
         </div>
     </form>
 </div>
 <div mat-dialog-actions>
   <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="serverFormGroup.value" cdkFocusInitial>Save</button>
+  <button mat-flat-button color="primary" (click)="save()" cdkFocusInitial>Save</button>
 </div>

@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 @Injectable()
 export class PermissionsService {
   canActivate(authService: AuthService, router: Router): boolean {
-    if(authService.isUserLoggedIn()){
+    if(authService.isUserLoggedIn()) {
         return true;
     } 
     router.navigate(['login']);

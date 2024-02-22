@@ -16,7 +16,6 @@ import { WebglAddon } from 'xterm-addon-webgl';
   styleUrls: ['./terminal-tail.component.scss']
 })
 export class TerminalTailComponent implements OnInit, AfterViewInit {
-  private _webGlAddon = new WebglAddon();
   private _unicode11 = new Unicode11Addon();
   private _serializeAddon = new SerializeAddon();
   private _searchAddon = new SearchAddon();
@@ -39,7 +38,6 @@ export class TerminalTailComponent implements OnInit, AfterViewInit {
       this._terminalConnectionManagerService.getConnection(this.terminalId);
       this.terminal.onData().subscribe((input) => this._terminalConnection?.input(input));
     this.terminal.underlying?.loadAddon(this._fitAddon);
-    this.terminal.underlying?.loadAddon(this._webGlAddon);
     this.terminal.underlying?.loadAddon(this._unicode11);
     this.terminal.underlying?.loadAddon(this._serializeAddon);
     this.terminal.underlying?.loadAddon(this._searchAddon);

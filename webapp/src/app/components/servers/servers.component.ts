@@ -30,7 +30,6 @@ export class ServersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._serversService.getServers().subscribe();
   }
 
   public addServer() {

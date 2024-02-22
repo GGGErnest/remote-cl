@@ -24,42 +24,6 @@ import {
   validateIPv6,
 } from 'src/app/logic/ipv4-validator';
 
-// function that receives a string containing an IP or an empty string and a character that will be appended to the IP. 
-// In addition the function will add a dot to the IP if the last character is a number and the character to be appended is a number,
-// all that keeping in account the length of the IP and the position of the dot.
-function appendToIp(ip: string, char: string):  string {
-  if(Number.isNaN(char)) {
-    return ip;
-  }
-
-  if(ip.length === 0) {
-    return char;
-  }
-
-  if(char === '.' && ip[ip.length - 1] === '.') { 
-    return ip;
-  }
-
-
-  // and IP with 3 dots has 15 characters
-  if(ip.length === 15) {
-    return ip;
-  }
-
-  const subnets = ip.split('.');
-
-
-  if(subnets.length <= 4) {
-    if(subnets[subnets.length - 1].length === 3) {
-      return ip + '.' + char;
-    } else {
-      return ip + char;
-    }
-  }
-
-  return ip
-}
-
 @Component({
   selector: 'hostname-input',
   templateUrl: './hostname-input.component.html',
@@ -123,8 +87,6 @@ export class HostnameInputComponent
       this._errorState = newState;
       this.stateChanges.next();
     }
-
-    [].length
   }
 
   writeValue(value: string | null): void {
@@ -168,31 +130,18 @@ export class HostnameInputComponent
     return this._value;
   }
 
-  public set mode(value: 'dns' | 'ip') {
-    this._mode = value;
-    this.validate();
-  }
-
   public get mode(): 'dns' | 'ip' {
     return this._mode;
   }
 
   public validate() {
-    const value = this.ngControl.control?.value;
+    const value = this.value ?? '';
     const validationErrors = this.ngControl.control?.errors || {};
     
-    if (value.includes(' ')) {
-      validationErrors['noSpaceAllowd'] = value;
+    if(!(validateHostname(value) || validateIPv4(value) || validateIPv6(value))) {
+      validationErrors['invalidHostnameOrIp'] = value;
     }
 
-    if(this.mode === 'dns' && !validateHostname(value)) {
-      validationErrors['invalidHostname'] = value;
-    }
-    
-    if(this.mode === 'ip' && !validateIPv4(value) && !validateIPv6(value)) {
-      validationErrors['invalidIp'] = value;
-    }
-    
     if(Object.keys(validationErrors).length) {
       this._invalid = true;
       this.ngControl.control?.setErrors(validationErrors);
@@ -206,13 +155,8 @@ export class HostnameInputComponent
     throw new Error('Method not implemented.');
   }
 
-  onKeypress(event: KeyboardEvent) {
-    debugger;
-    if(this.mode === 'ip') {
-      this.value = appendToIp(this.value|| '', event.key || '');
-    } else {
-      this.value = (event.target as HTMLInputElement).value;
-    }
+  onInput(event: Event) {
+    this.value = (event.target as HTMLInputElement).value;
     this.validate();
   }
 

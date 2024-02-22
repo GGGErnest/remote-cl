@@ -25,7 +25,6 @@ export interface TerminalDialogData {
   styleUrls: ['./terminal-dialog.component.scss']
 })
 export class TerminalDialogComponent implements AfterViewInit {
-  private _webGlAddon = new WebglAddon();
   private _unicode11 = new Unicode11Addon();
   private _serializeAddon = new SerializeAddon();
   private _searchAddon = new SearchAddon();
@@ -62,7 +61,6 @@ export class TerminalDialogComponent implements AfterViewInit {
     
     this.term.onData().subscribe((input) => this._onTerminalInput(input));
     this.term.underlying?.loadAddon(this._fitAddon);
-    this.term.underlying?.loadAddon(this._webGlAddon);
     this.term.underlying?.loadAddon(this._unicode11);
     this.term.underlying?.loadAddon(this._serializeAddon);
     this.term.underlying?.loadAddon(this._searchAddon);
