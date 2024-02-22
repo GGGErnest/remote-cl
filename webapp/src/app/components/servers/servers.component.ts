@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ServersService } from 'src/app/services/servers.service';
 import { Server } from 'src/app/types/server-types';
-import { AddServerDialogComponent } from '../dialog/add-server-dialog/add-server-dialog.component';
+import { AddServerDialogComponent } from '../dialogs/add-server-dialog/add-server-dialog.component';
 import { TerminalConnectionManagerService } from 'src/app/services/shells-connection-manager.service';
-import { TerminalDialogComponent } from '../dialog/terminal-dialog/terminal-dialog.component';
+import { TerminalDialogComponent } from '../dialogs/terminal-dialog/terminal-dialog.component';
 import { TerminalsService } from 'src/app/services/terminals.service';
 import { StateService } from 'src/app/services/state.service';
-import { PromptDialogComponent } from '../dialog/prompt-dialog/prompt-dialog.component';
+import { PromptDialogComponent } from '../dialogs/prompt-dialog/prompt-dialog.component';
 
 @Component({
   selector: 'app-servers',

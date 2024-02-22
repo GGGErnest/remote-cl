@@ -1,0 +1,7 @@
+<div class="hostname-input-container" (focusin)="onFocusIn($event)" (focusout)="onFocusOut($event)">
+    <input class="hostname-input-element" type="text" [value]="value" (keypress)="  ($event)" (focusin)="onFocusIn($event)" (focusout)="onFocusOut($event)"/>
+    <mat-button-toggle-group [(ngModel)]="mode" aria-label="Font Style">
+        <mat-button-toggle value="dns">DNS</mat-button-toggle>
+        <mat-button-toggle value="ip">IP</mat-button-toggle>
+      </mat-button-toggle-group>
+</div>

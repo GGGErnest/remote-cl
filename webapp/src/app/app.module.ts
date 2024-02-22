@@ -23,6 +23,8 @@ import { TerminalsService } from './services/terminals.service';
 import { WebSocketService } from './services/web-socket.service';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+
 import {
   MAT_DIALOG_DEFAULT_OPTIONS,
   MatDialogModule,
@@ -30,12 +32,12 @@ import {
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgTerminalModule } from 'ng-terminal';
 import { ServersComponent } from './components/servers/servers.component';
-import { AddServerDialogComponent } from './components/dialog/add-server-dialog/add-server-dialog.component';
-import { TerminalDialogComponent } from './components/dialog/terminal-dialog/terminal-dialog.component';
+import { AddServerDialogComponent } from './components/dialogs/add-server-dialog/add-server-dialog.component';
+import { TerminalDialogComponent } from './components/dialogs/terminal-dialog/terminal-dialog.component';
 import { TerminalConnectionManagerService } from './services/shells-connection-manager.service';
 import { StateService } from './services/state.service';
 import { ErrorHandlingInterceptor } from './services/interceptors/error-handling-intercepto';
-import { PromptDialogComponent } from './components/dialog/prompt-dialog/prompt-dialog.component';
+import { PromptDialogComponent } from './components/dialogs/prompt-dialog/prompt-dialog.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TerminalTailComponent } from './components/terminal-tail/terminal-tail.component';
 import {
@@ -47,7 +49,7 @@ import { CustomTitleStrategy } from './services/custom-title-strategy.service';
 import { SubPageTitleService } from './services/sub-page-title.service';
 import { InfoComponent } from './components/notifications/info/info.component';
 import { ErrorComponent } from './components/notifications/error/error.component';
-import { IpInputComponent } from './components/ui-elements/ip-input/ip-input.component';
+import { HostnameInputComponent } from './components/ui-elements/hostname-input/hostname-input.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,7 @@ import { IpInputComponent } from './components/ui-elements/ip-input/ip-input.com
     TerminalTailComponent,
     InfoComponent,
     ErrorComponent,
-    IpInputComponent,
+    HostnameInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,6 +84,7 @@ import { IpInputComponent } from './components/ui-elements/ip-input/ip-input.com
     MatDialogModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatButtonToggleModule,
   ],
   providers: [
     {

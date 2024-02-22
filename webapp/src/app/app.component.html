@@ -1,10 +1,12 @@
 <mat-toolbar color="primary">
   <a class="logo" routerLink="/dashboard"><mat-icon>terminal</mat-icon> {{title}}</a>
-  <div class="navigation">
-    <a *ngIf="_authService.isUserLoggedIn$ | async" routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">Dashboard</a>
-    <a *ngIf="_authService.isUserLoggedIn$ | async" routerLink="/servers" routerLinkActive="active" ariaCurrentWhenActive="page">Servers</a>
-  </div>
-  <a *ngIf="_authService.isUserLoggedIn$ | async" routerLink="/logout" routerLinkActive="active" ariaCurrentWhenActive="page"><mat-icon>logout</mat-icon></a>
+  <ng-container *ngIf="_authService.isUserLoggedIn$ | async">
+    <div class="navigation">
+      <a routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">Dashboard</a>
+      <a routerLink="/servers" routerLinkActive="active" ariaCurrentWhenActive="page">Servers</a>
+    </div>
+    <a routerLink="/logout" routerLinkActive="active" ariaCurrentWhenActive="page"><mat-icon>logout</mat-icon></a>
+</ng-container>
 </mat-toolbar>
 <h2 *ngIf="pageTitle" class="page-header">{{pageTitle}}</h2>
 <div class="container">
