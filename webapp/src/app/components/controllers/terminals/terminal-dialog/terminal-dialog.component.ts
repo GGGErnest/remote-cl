@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, Inject, ViewChild, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { NgTerminal } from 'ng-terminal';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { NgTerminal, NgTerminalModule } from 'ng-terminal';
 import { TerminalConnection } from 'src/app/types/terminal-connection';
 import { ITerminalOptions } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SerializeAddon } from 'xterm-addon-serialize';
 import { Unicode11Addon } from 'xterm-addon-unicode11';
+import { MatButton } from '@angular/material/button';
  
 export interface TerminalDialogData {
   terminalID:string;
@@ -17,9 +18,11 @@ export interface TerminalDialogData {
 const defaultTerminalOptions: ITerminalOptions = {cursorBlink: true, allowProposedApi:true, macOptionClickForcesSelection:true,macOptionIsMeta:true};
 
 @Component({
-  selector: 'app-terminal-dialog',
-  templateUrl: './terminal-dialog.component.html',
-  styleUrls: ['./terminal-dialog.component.scss']
+    selector: 'app-terminal-dialog',
+    templateUrl: './terminal-dialog.component.html',
+    styleUrls: ['./terminal-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatDialogContent, NgTerminalModule, MatDialogActions, MatButton]
 })
 export class TerminalDialogComponent implements AfterViewInit {
   private _unicode11 = new Unicode11Addon();

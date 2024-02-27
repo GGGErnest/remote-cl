@@ -8,8 +8,8 @@ describe('HostnameInputComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HostnameInputComponent]
-    });
+    imports: [HostnameInputComponent]
+});
     fixture = TestBed.createComponent(HostnameInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

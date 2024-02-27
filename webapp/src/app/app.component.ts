@@ -3,11 +3,25 @@ import { AuthService } from './services/auth.service';
 import { WebSocketService } from './services/web-socket.service';
 import { tap } from 'rxjs';
 import { SubPageTitleService } from './services/sub-page-title.service';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [
+        MatToolbar,
+        RouterLink,
+        MatIcon,
+        NgIf,
+        RouterLinkActive,
+        RouterOutlet,
+        AsyncPipe,
+    ],
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'RWT';

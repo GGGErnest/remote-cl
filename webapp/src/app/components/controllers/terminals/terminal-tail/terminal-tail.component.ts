@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { NgTerminalComponent } from 'ng-terminal';
+import { NgTerminalComponent, NgTerminalModule } from 'ng-terminal';
 import { TerminalConnectionManagerService } from 'src/app/services/shells-connection-manager.service';
 import { TerminalsService } from 'src/app/services/terminals.service';
 import { TerminalConnection } from 'src/app/types/terminal-connection';
@@ -14,11 +14,24 @@ import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SerializeAddon } from 'xterm-addon-serialize';
 import { Unicode11Addon } from 'xterm-addon-unicode11';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 
 @Component({
-  selector: 'app-terminal-tail',
-  templateUrl: './terminal-tail.component.html',
-  styleUrls: ['./terminal-tail.component.scss'],
+    selector: 'app-terminal-tail',
+    templateUrl: './terminal-tail.component.html',
+    styleUrls: ['./terminal-tail.component.scss'],
+    standalone: true,
+    imports: [
+        MatCard,
+        MatCardHeader,
+        MatCardTitle,
+        MatIconButton,
+        MatIcon,
+        MatCardContent,
+        NgTerminalModule,
+    ],
 })
 export class TerminalTailComponent implements OnInit, AfterViewInit {
   private _unicode11 = new Unicode11Addon();
