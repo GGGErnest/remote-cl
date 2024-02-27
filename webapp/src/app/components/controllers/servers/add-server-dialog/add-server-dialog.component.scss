@@ -1,0 +1,22 @@
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.connection-data {
+    display: flex;
+    flex-direction: column;
+}
+
+
+mat-form-field {
+    margin: 10px;
+}
+
+.connection-data .description {
+    width: 400px;
+}
+
+.mat-mdc-dialog-actions {
+    margin-left: 16px;
+}

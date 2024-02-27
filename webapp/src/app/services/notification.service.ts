@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ErrorComponent } from '../components/notifications/error/error.component';
-import { InfoComponent } from '../components/notifications/info/info.component';
+import { ErrorComponent } from '../components/dumbs/notifications/error/error.component';
+import { InfoComponent } from '../components/dumbs/notifications/info/info.component';
 
 @Injectable({
   providedIn: 'root'

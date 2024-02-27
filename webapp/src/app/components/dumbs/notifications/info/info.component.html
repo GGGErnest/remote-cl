@@ -1,0 +1,12 @@
+<span class="error-message" matSnackBarLabel>
+  {{ data }}
+</span>
+<span matSnackBarActions>
+  <button
+    mat-button
+    matSnackBarAction
+    (click)="snackBarRef.dismissWithAction()"
+  >
+    X
+  </button>
+</span>

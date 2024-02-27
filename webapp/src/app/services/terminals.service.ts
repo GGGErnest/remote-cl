@@ -1,20 +1,16 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { WebSocketService } from './web-socket.service';
-import { HistorySubject } from '../utils/history-subject';
-import { WSOutMessage } from '../types/ws-types';
+import { Injectable } from '@angular/core';
+import lodash from 'lodash';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { serializeMap, deserializeMap } from '../utils/serializers';
 import {
   CreateTerminalResponse,
   TerminalHistoryResponse,
   TerminalResponse,
 } from '../types/api/response-types';
+import { Server } from '../types/server-types';
 import { TerminalConnectionManagerService } from './shells-connection-manager.service';
 import { StateService } from './state.service';
-import lodash from 'lodash';
-import { Server } from '../types/server-types';
 
 export type TerminalMessage = { result: string; message: string } | undefined;
 

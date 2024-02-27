@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from './web-socket.service';
 import { TerminalConnection } from '../types/terminal-connection';
-import { WSTerminalConnection } from '../logic/ws-terminal-connection';
+import { WSTerminalConnection } from '../clases/ws-terminal-connection';
 import { StateService } from './state.service';
 import lodash from 'lodash';
 import { Server } from '../types/server-types';

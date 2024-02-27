@@ -5,8 +5,8 @@ export interface Server {
         port:number;
         username:string;
         password:string;
-        pkey:string;
-        usePKey:boolean;
+        privateKey:string;
+        usePkey:boolean;
     };
     description: string;
     runningShells: {[key:string]:string};

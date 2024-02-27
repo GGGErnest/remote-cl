@@ -1,70 +1,56 @@
 import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
-import { PermissionsService } from './services/permission.service';
-import { LogoutComponent } from './components/logout/logout.component';
+import { AuthorizationService } from './services/authorization.service';
 import { AuthInterceptor } from './services/interceptors/auth-interceptor';
 import { TerminalsService } from './services/terminals.service';
 import { WebSocketService } from './services/web-socket.service';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import {
   MAT_DIALOG_DEFAULT_OPTIONS,
   MatDialogModule,
 } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgTerminalModule } from 'ng-terminal';
-import { ServersComponent } from './components/servers/servers.component';
-import { AddServerDialogComponent } from './components/dialogs/add-server-dialog/add-server-dialog.component';
-import { TerminalDialogComponent } from './components/dialogs/terminal-dialog/terminal-dialog.component';
-import { TerminalConnectionManagerService } from './services/shells-connection-manager.service';
-import { StateService } from './services/state.service';
-import { ErrorHandlingInterceptor } from './services/interceptors/error-handling-intercepto';
-import { PromptDialogComponent } from './components/dialogs/prompt-dialog/prompt-dialog.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { TerminalTailComponent } from './components/terminal-tail/terminal-tail.component';
 import {
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
   MatSnackBarModule,
 } from '@angular/material/snack-bar';
 import { TitleStrategy } from '@angular/router';
+import { NgTerminalModule } from 'ng-terminal';
+import { TerminalDialogComponent } from './components/controllers/terminals/terminal-dialog/terminal-dialog.component';
+import { TerminalTailComponent } from './components/controllers/terminals/terminal-tail/terminal-tail.component';
+import { ErrorComponent } from './components/dumbs/notifications/error/error.component';
+import { InfoComponent } from './components/dumbs/notifications/info/info.component';
+import { DashboardRouteComponent } from './components/routes/dashboard-route/dashboard-route.component';
 import { CustomTitleStrategy } from './services/custom-title-strategy.service';
+import { ErrorHandlingInterceptor } from './services/interceptors/error-handling-intercepto';
+import { TerminalConnectionManagerService } from './services/shells-connection-manager.service';
+import { StateService } from './services/state.service';
 import { SubPageTitleService } from './services/sub-page-title.service';
-import { InfoComponent } from './components/notifications/info/info.component';
-import { ErrorComponent } from './components/notifications/error/error.component';
-import { HostnameInputComponent } from './components/ui-elements/hostname-input/hostname-input.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    LogoutComponent,
-    ServersComponent,
-    AddServerDialogComponent,
     TerminalDialogComponent,
-    PromptDialogComponent,
-    DashboardComponent,
+    DashboardRouteComponent,
     TerminalTailComponent,
-    InfoComponent,
-    ErrorComponent,
-    HostnameInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -85,6 +71,7 @@ import { HostnameInputComponent } from './components/ui-elements/hostname-input/
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatButtonToggleModule,
+    MatCheckboxModule,
   ],
   providers: [
     {
@@ -110,7 +97,7 @@ import { HostnameInputComponent } from './components/ui-elements/hostname-input/
     AuthService,
     TerminalsService,
     WebSocketService,
-    PermissionsService,
+    AuthorizationService,
     TerminalConnectionManagerService,
     StateService,
   ],
