@@ -1,14 +1,14 @@
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>{{terminalId}}</mat-card-title>
-      <div>
-        <button mat-icon-button color="primary" (click)="stop()"><mat-icon>close</mat-icon></button>
-      </div>
-    </mat-card-header>
-    <mat-card-content>
-        <ng-terminal #term
-        cdkFocusInitial
-        [xtermOptions]="terminalOptions">
-    </ng-terminal>
-    </mat-card-content>
-  </mat-card>
+<div class="tile-header">
+  <span class="tile-title">{{ terminalId() }}</span>
+  <div class="tile-actions">
+    <button mat-icon-button (click)="minimizeMazimize()">
+      <mat-icon>minimize</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="stop()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<ng-terminal #term cdkFocusInitial [xtermOptions]="terminalOptions">
+</ng-terminal>

@@ -10,17 +10,12 @@ ng-terminal {
     flex-grow: 1;
 }
 
-h3 {
-    margin: 0px;
-}
-
-mat-card-content {
-    position: relative;;
-}
-
-mat-card-header div {
- flex-grow: 2;
+.tile-header {
  display: flex;
- flex-direction: row;
- justify-content: flex-end;
+ align-items: center;
+ justify-content: space-between;
+}
+
+.tile-actions {
+
 }

@@ -1,0 +1,8 @@
+  <div class="active-terminals">
+    @for (server of (stateService.servers$ | async); track server.name ) {
+      @for (terminal of getTerminals(server); track terminal) {
+        <app-terminal-tail #term class="terminal" [terminalId]="terminal" [server]="server" [state]="'normal'"  (stateChange)="onTerminalStateChange(terminal, $event)"/>
+      }
+    }
+  </div>
+  

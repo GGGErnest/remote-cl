@@ -1,8 +1,1 @@
-  <div class="active-terminals">
-    <ng-template ngFor let-server  [ngForOf]="(stateService.servers$ | async)">
-          <app-terminal-tail #term class="terminal"  *ngFor="let terminal of getTerminals(server)"
-            [terminalId]="terminal"
-          ></app-terminal-tail>
-      </ng-template>
-  </div>
-  
+<dashboard />

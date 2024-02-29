@@ -24,45 +24,71 @@ import { AuthService } from './app/services/auth.service';
 import { SubPageTitleService } from './app/services/sub-page-title.service';
 import { CustomTitleStrategy } from './app/services/custom-title-strategy.service';
 import { TitleStrategy } from '@angular/router';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+  MatSnackBarModule,
+} from '@angular/material/snack-bar';
+import {
+  MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { ErrorHandlingInterceptor } from './app/services/interceptors/error-handling-intercepto';
 import { AuthInterceptor } from './app/services/interceptors/auth-interceptor';
-import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  withInterceptorsFromDi,
+  provideHttpClient,
+} from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
-
 bootstrapApplication(AppComponent, {
-    providers: [
-        importProvidersFrom(BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule, MatToolbarModule, MatInputModule, MatButtonModule, MatAutocompleteModule, MatSelectModule, MatIconModule, NgTerminalModule, MatCardModule, MatDialogModule, MatProgressSpinnerModule, MatSnackBarModule, MatButtonToggleModule, MatCheckboxModule),
-        {
-            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-            useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
-        },
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: ErrorHandlingInterceptor,
-            multi: true,
-        },
-        {
-            provide: MAT_DIALOG_DEFAULT_OPTIONS,
-            useValue: { hasBackdrop: true, disableClose: true },
-        },
-        { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
-        {
-            provide: TitleStrategy,
-            useClass: CustomTitleStrategy,
-        },
-        SubPageTitleService,
-        AuthService,
-        TerminalsService,
-        WebSocketService,
-        AuthorizationService,
-        TerminalConnectionManagerService,
-        StateService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideAnimations(),
-    ]
-})
-  .catch(err => console.error(err));
+  providers: [
+    importProvidersFrom(
+      BrowserModule,
+      AppRoutingModule,
+      FormsModule,
+      ReactiveFormsModule,
+      MatToolbarModule,
+      MatInputModule,
+      MatButtonModule,
+      MatAutocompleteModule,
+      MatSelectModule,
+      MatIconModule,
+      NgTerminalModule,
+      MatCardModule,
+      MatDialogModule,
+      MatProgressSpinnerModule,
+      MatSnackBarModule,
+      MatButtonToggleModule,
+      MatCheckboxModule
+    ),
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorHandlingInterceptor,
+      multi: true,
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: { hasBackdrop: true, disableClose: true },
+    },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
+    {
+      provide: TitleStrategy,
+      useClass: CustomTitleStrategy,
+    },
+    SubPageTitleService,
+    AuthService,
+    TerminalsService,
+    WebSocketService,
+    AuthorizationService,
+    TerminalConnectionManagerService,
+    StateService,
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations(),
+  ],
+}).catch((err) => console.error(err));
