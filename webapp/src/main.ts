@@ -15,14 +15,14 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { StateService } from './app/services/state.service';
-import { TerminalConnectionManagerService } from './app/services/shells-connection-manager.service';
-import { AuthorizationService } from './app/services/authorization.service';
-import { WebSocketService } from './app/services/web-socket.service';
-import { TerminalsService } from './app/services/terminals.service';
-import { AuthService } from './app/services/auth.service';
-import { SubPageTitleService } from './app/services/sub-page-title.service';
-import { CustomTitleStrategy } from './app/services/custom-title-strategy.service';
+import { StateService } from './app/shared/data-access/state.service';
+import { TerminalConnectionManagerService } from './app/terminals/data-access/terminal-connection-manager.service';
+import { AuthorizationService } from './app/authentication/data-access/authorization.service';
+import { WebSocketService } from './app/shared/data-access/web-socket.service';
+import { TerminalsService } from './app/terminals/data-access/terminals.service';
+import { AuthService } from './app/authentication/data-access/auth.service';
+import { SubPageTitleService } from './app/shared/data-access/sub-page-title.service';
+import { CustomTitleStrategy } from './app/shared/data-access/custom-title-strategy.service';
 import { TitleStrategy } from '@angular/router';
 import {
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
@@ -32,8 +32,8 @@ import {
   MAT_DIALOG_DEFAULT_OPTIONS,
   MatDialogModule,
 } from '@angular/material/dialog';
-import { ErrorHandlingInterceptor } from './app/services/interceptors/error-handling-intercepto';
-import { AuthInterceptor } from './app/services/interceptors/auth-interceptor';
+import { ErrorHandlingInterceptor } from './app/authentication/data-access/interceptors/error-handling-intercepto';
+import { AuthInterceptor } from './app/authentication/data-access/interceptors/auth-interceptor';
 import {
   HTTP_INTERCEPTORS,
   withInterceptorsFromDi,

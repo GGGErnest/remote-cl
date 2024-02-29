@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from './services/auth.service';
-import { WebSocketService } from './services/web-socket.service';
+import { AuthService } from './authentication/data-access/auth.service';
+import { WebSocketService } from './shared/data-access/web-socket.service';
 import { tap } from 'rxjs';
-import { SubPageTitleService } from './services/sub-page-title.service';
+import { SubPageTitleService } from './shared/data-access/sub-page-title.service';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
