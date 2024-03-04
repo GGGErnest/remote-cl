@@ -1,8 +1,30 @@
-  <div class="active-terminals">
-    @for (server of (stateService.servers$ | async); track server.name ) {
-      @for (terminal of getTerminals(server); track terminal) {
-        <app-terminal-tail #term class="terminal" [terminalId]="terminal" [server]="server" [state]="'normal'"  (stateChange)="onTerminalStateChange(terminal, $event)"/>
-      }
-    }
-  </div>
-  
+<div class="active-terminals">
+  @for (terminal of terminals().values(); track terminal.id) { @if
+  (terminal.state() !== 'minimized') {
+  <app-terminal-tail
+    #term
+    class="terminal"
+    [ngClass]="{
+      fullscreen: terminal.state() === 'fullscreen',
+      hidden: terminal.state() === 'hidden',
+    }"
+    [terminalId]="terminal.id"
+    [server]="terminal.server"
+    [state]="terminal.state()"
+    (stateChange)="onTerminalStateChange(terminal.id, $event)"
+  />
+  } }
+</div>
+<div class="minimized-container">
+  @for (terminal of terminals().values(); track terminal.id) { @if
+  (terminal.state() === 'minimized') {
+  <app-terminal-tail
+    #term
+    class="terminal minimized"
+    [terminalId]="terminal.id"
+    [server]="terminal.server"
+    [state]="terminal.state()"
+    (stateChange)="onTerminalStateChange(terminal.id, $event)"
+  />
+  } }
+</div>

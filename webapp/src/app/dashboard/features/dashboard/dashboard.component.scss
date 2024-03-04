@@ -23,13 +23,45 @@
 }
 
 .terminal {
-    min-width: 200px;
-    max-width: 30%;
+    min-width: 300px;
+    max-width: 497px;
+    min-height: 300px;
+    max-height: 507px;
+    margin: 5px;
+}
+
+.fullscreen {
+    min-width: 300px;
+    max-width: unset;
     min-height: 150px;
-    max-height: 500px;
-    // margin: 10px;
+    max-height: unset;
+}
+
+.minimized {
+    min-width: unset;
+    min-height: unset;
+    max-width: unset;
+    width: 200px;
+    height: 54px;
+    margin: 0px;
+}
+
+.hidden {
+    display: none;;
 }
 
 terminal-tail {
     flex-grow: 1;
+}
+
+.minimized-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    padding: 0px;
+    // border: solid 1px lightgray;
+    height: 54px;
 }
