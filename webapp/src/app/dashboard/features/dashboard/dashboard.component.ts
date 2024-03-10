@@ -1,12 +1,5 @@
-import { NgClass, NgFor } from '@angular/common';
-import {
-  Component,
-  OnInit,
-  WritableSignal,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { NgClass, NgFor, NgStyle } from '@angular/common';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Server } from 'src/app/servers/data-access/server';
 import { ServersService } from 'src/app/servers/data-access/servers.service';
 import { StateService } from 'src/app/shared/data-access/state.service';
@@ -16,12 +9,15 @@ import {
   TerminalTailState,
 } from '../terminal-tail/terminal-tail.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { historySignal } from 'src/app/shared/utils/history-signal';
+import {
+  HistorySignal,
+  historySignal,
+} from 'src/app/shared/utils/history-signal';
 
 type Terminal = {
   id: string;
   server: Server;
-  state: WritableSignal<TerminalTailState>;
+  state: HistorySignal<TerminalTailState>;
 };
 
 @Component({
@@ -29,7 +25,7 @@ type Terminal = {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [NgFor, TerminalTailComponent, NgClass],
+  imports: [NgFor, TerminalTailComponent, NgClass, NgStyle],
 })
 export class DashboardComponent implements OnInit {
   public terminalOptions: ITerminalOptions = {
@@ -50,7 +46,7 @@ export class DashboardComponent implements OnInit {
         const terminalData: Terminal = {
           id: terminalId,
           server: server,
-          state: signal('normal'),
+          state: historySignal<TerminalTailState>('normal'),
         };
 
         terminalsData.set(terminalId, terminalData);
@@ -66,39 +62,30 @@ export class DashboardComponent implements OnInit {
   }
 
   onTerminalStateChange(terminalId: string, state: TerminalTailState) {
+    const targetTerminal = this.terminals().get(terminalId)!;
+    const exitingFullScreen =
+      targetTerminal.state() === 'fullscreen' && state === 'normal';
+    if (exitingFullScreen) {
+      targetTerminal.state.rollback();
+      this.fullscreen.set(undefined);
+    } else if (state === 'fullscreen') {
+      targetTerminal.state.setNoHistory(state);
+      this.fullscreen.set(terminalId);
+    } else {
+      targetTerminal.state.set(state);
+    }
+
     for (const terminal of this.terminals().values()) {
-      if (terminalId === terminal.id) {
-        terminal.state.set(state);
-        continue;
-      }
-
-      if (state === 'fullscreen') {
-          terminal.state.set('minimized');
-          continue;
-      }
-
-      if (state === 'normal') {
-        if (terminal.state() === 'hidden') {
-          terminal.state.set('normal');
+      if (terminalId !== terminal.id) {
+        if (exitingFullScreen) {
+          terminal.state.rollback();
           continue;
         }
 
-        if (terminal.state() === 'fullscreen') {
-          terminal.state.set('normal');
+        if (state === 'fullscreen') {
+          terminal.state.setNoHistory('minimized');
           continue;
         }
-      }
-
-      if (state === 'minimized') {
-        if (terminal.state() === 'fullscreen') {
-          terminal.state.set('normal');
-          continue;
-        }
-
-        if (terminal.state() === 'fullscreen') {
-          terminal.state.set('normal');
-        }
-        continue;
       }
     }
   }

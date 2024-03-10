@@ -1,4 +1,4 @@
-<div class="active-terminals">
+<div class="active-terminals" [ngStyle]="{padding: fullscreen() !== undefined ? '0px': '10px'}">
   @for (terminal of terminals().values(); track terminal.id) { @if
   (terminal.state() !== 'minimized') {
   <app-terminal-tail
@@ -6,9 +6,9 @@
     class="terminal"
     [ngClass]="{
       fullscreen: terminal.state() === 'fullscreen',
-      hidden: terminal.state() === 'hidden',
     }"
     [terminalId]="terminal.id"
+    [fullscreenMode]="fullscreen()!== undefined"
     [server]="terminal.server"
     [state]="terminal.state()"
     (stateChange)="onTerminalStateChange(terminal.id, $event)"
@@ -22,6 +22,7 @@
     #term
     class="terminal minimized"
     [terminalId]="terminal.id"
+    [fullscreenMode]="fullscreen()!== undefined"
     [server]="terminal.server"
     [state]="terminal.state()"
     (stateChange)="onTerminalStateChange(terminal.id, $event)"

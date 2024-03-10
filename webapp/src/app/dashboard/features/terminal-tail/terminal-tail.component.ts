@@ -1,4 +1,4 @@
-import { NgStyle } from '@angular/common';
+import { NgClass, NgStyle } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -21,7 +21,7 @@ import { SerializeAddon } from 'xterm-addon-serialize';
 import { Unicode11Addon } from 'xterm-addon-unicode11';
 import { Server } from 'src/app/servers/data-access/server';
 
-export type TerminalTailState  = 'normal'| 'maximize' | 'minimized';
+export type TerminalTailState  = 'normal' | 'minimized' | 'fullscreen';
 
 @Component({
     selector: 'app-terminal-tail',
@@ -37,6 +37,7 @@ export type TerminalTailState  = 'normal'| 'maximize' | 'minimized';
         MatCardContent,
         NgTerminalModule,
         NgStyle,
+        NgClass,
     ],
 })
 export class TerminalTailComponent implements AfterViewInit {
@@ -48,9 +49,10 @@ export class TerminalTailComponent implements AfterViewInit {
   private _terminalConnectionManagerService = inject(TerminalConnectionManagerService);
   private _terminalsService = inject(TerminalsService);
 
-  public state = model<'normal'| 'maximize' | 'minimized'>('normal');
+  public state = model<TerminalTailState>('normal');
   terminalId = input.required<string>();
   server = input.required<Server>();
+  fullscreenMode = input<boolean>();
 
   @ViewChild(NgTerminalComponent) terminal!: NgTerminalComponent;
   terminalOptions: ITerminalOptions = {
@@ -99,27 +101,23 @@ export class TerminalTailComponent implements AfterViewInit {
     }
   }
 
-  open() {}
-
   stop() {
     this._terminalsService.stopTerminal(this.server(), this.terminalId()).subscribe();
   }
 
-  /**
-   * This function will reduce the size of the component but keeping 
-   * the toolbar visible with all the available options to 
-   */
-  minimizeMazimize() {
-    console.log('Minimize clicked');
+  minimizeOrNormalize() {
+      if(this.state() === 'minimized') {
+        this.state.set('normal');
+      } else if(this.state() === 'normal') {
+        this.state.set('minimized');
+      }
+  }
 
-    if(this.state() === 'minimized') {
-      this.state.set('maximize');
-      return;
-    }
-
-    if(this.state() === 'maximize' || this.state() === 'normal') {
-      this.state.set('minimized');
-      return;
+  fullscreen() {
+    if(this.state() === 'fullscreen') {
+      this.state.set('normal');
+    } else {
+      this.state.set('fullscreen');
     }
   }
 

@@ -1,9 +1,9 @@
 :host {
-    height: 100%;
-    width: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
+    border: solid 1px lightgray;
+    overflow: hidden;
 }
 
 ng-terminal {
@@ -16,6 +16,11 @@ ng-terminal {
  justify-content: space-between;
 }
 
-.tile-actions {
+.tile-title {
+    margin: 0px 10px 0px 10px;
+}
 
+.minimized {
+    display: none;
+    height: 0px;
 }

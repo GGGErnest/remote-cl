@@ -1,0 +1,29 @@
+<div class="tile-header">
+  <span class="tile-title">{{ terminalId() }}</span>
+  <div class="tile-actions">
+    <button mat-icon-button [disabled]="fullscreenMode()" (click)="minimizeOrNormalize()">
+        @if(state() === 'normal') {
+          <mat-icon>minimize</mat-icon>
+        }@else if(state() === 'minimized') {
+          <mat-icon>maximized</mat-icon>
+        } @else {
+          <mat-icon>minimize</mat-icon>
+        }
+    </button>
+    <button mat-icon-button (click)="fullscreen()">
+      @if(state() === 'fullscreen') {
+        <mat-icon>close_fullscreen</mat-icon>
+      }@else if(state() === 'normal') {
+        <mat-icon>open_in_full</mat-icon>
+      } @else {
+        <mat-icon>open_in_full</mat-icon>
+      }
+    </button>
+    <button mat-icon-button color="warn" (click)="stop()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<ng-terminal #term cdkFocusInitial [xtermOptions]="terminalOptions" [ngClass]="{minimized:state() === 'minimized'}">
+</ng-terminal>
