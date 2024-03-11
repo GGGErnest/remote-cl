@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { deepEqual } from '../utils/deep-equal';
 import lodash from 'lodash';
-import { Server } from '../../servers/data-access/server';
+import { Server } from '../../servers/data-access/server-types';
+import { signalStore, withState } from '@ngrx/signals';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StateService {
+  private _serversStore = signalStore(withState([]));
   private _servers = new BehaviorSubject<Server[]>([]);
   servers$ = this._servers.asObservable();
 
@@ -19,7 +21,7 @@ export class StateService {
   }
 
   public updateServers(servers: Server[]) {
-    if(deepEqual(this._servers.value,servers)) {
+    if (deepEqual(this._servers.value, servers)) {
       return;
     }
 

@@ -1,13 +1,11 @@
-import { BaseServerResponse } from "src/app/shared/data-access/api-types";
+import { ServerResponse } from 'src/app/shared/data-access/models/api-types';
 
-export interface TerminalResponse extends BaseServerResponse {
-
-}
+export interface TerminalResponse extends ServerResponse {}
 
 export interface TerminalHistoryResponse {
-    result:string[];
+  result: string[];
 }
 
-export interface CreateTerminalResponse extends BaseServerResponse {
+export interface CreateTerminalResponse extends ServerResponse {
   result: { terminalId: string };
 }

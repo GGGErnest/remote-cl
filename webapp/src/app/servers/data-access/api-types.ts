@@ -1,7 +1,6 @@
-import { BaseServerResponse } from "src/app/shared/data-access/api-types";
-import { Server } from "./server";
+import { ServerResponse } from 'src/app/shared/data-access/models/api-types';
+import { Server } from './server-types';
 
-export interface ServersResponse extends BaseServerResponse {
-    result: Server[];
-  }
-  
+export interface ServersResponse extends ServerResponse {
+  result: Server[];
+}

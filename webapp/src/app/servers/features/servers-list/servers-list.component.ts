@@ -10,8 +10,15 @@ import { TerminalPromptDialogComponent } from '../../../terminals/features/termi
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { AsyncPipe, NgFor } from '@angular/common';
-import { MatButton, MatButtonModule, MatIconButton } from '@angular/material/button';
-import { Server } from '../../data-access/server';
+import {
+  MatButton,
+  MatButtonModule,
+  MatIconButton,
+} from '@angular/material/button';
+import { Server } from '../../data-access/server-types';
+import { ServersStore } from '../../data-access/servers-store';
+import { firstValueFrom } from 'rxjs';
+import { TerminalsStore } from 'src/app/terminals/data-access/terminals-store';
 
 @Component({
   selector: 'servers-list',
@@ -31,19 +38,20 @@ import { Server } from '../../data-access/server';
   ],
 })
 export class ServersListComponent {
-  private serverDialog?: MatDialogRef<AddServerDialogComponent>;
-  private _serversService = inject(ServersService);
+  private serverDialog?: MatDialogRef<AddServerDialogComponent, Server>;
   private _dialog: MatDialog = inject(MatDialog);
-  private _terminalService= inject(TerminalsService);
-  private _terminalConnectionManagerService = inject(TerminalConnectionManagerService);
-  public _stateService = inject(StateService);
+  private _terminalsStore = inject(TerminalsStore);
+  private _terminalConnectionManagerService = inject(
+    TerminalConnectionManagerService
+  );
+  private _serversStore = inject(ServersStore);
+  public servers = this._serversStore.servers;
 
   getTerminals(server: Server): string[] {
     return Object.values(server.runningShells);
   }
 
-
-  public addServer() {
+  public async addServer() {
     this.serverDialog = this._dialog.open<AddServerDialogComponent>(
       AddServerDialogComponent,
       {
@@ -53,18 +61,13 @@ export class ServersListComponent {
       }
     );
 
-    this.serverDialog.afterClosed().subscribe((result) => {
-      if (result) {
-        this._serversService.addServer(result).subscribe((response) => {
-          const servers = this._stateService.servers;
-          servers.push(...response.result);
-          this._stateService.updateServers(servers);
-        });
-      }
-    });
+    const result = await firstValueFrom(this.serverDialog.afterClosed());
+    if (result) {
+      this._serversStore.addServer(result);
+    }
   }
 
-  public editServer(server: Server) {
+  public async editServer(server: Server) {
     const currentName = server.name;
     this.serverDialog = this._dialog.open(AddServerDialogComponent, {
       data: {
@@ -73,66 +76,63 @@ export class ServersListComponent {
       },
     });
 
-    this.serverDialog.afterClosed().subscribe((result) => {
-      if (result) {
-        // TODO: send some feedback to the user
-        this._serversService
-          .editServer(currentName, result)
-          .subscribe((response) => {
-            this._stateService.updateServers(response.result);
-          });
-      }
-    });
+    const result = await firstValueFrom(this.serverDialog.afterClosed());
+    if (result) {
+      // TODO: send some feedback to the user
+      this._serversStore.editServer(result);
+    }
   }
 
-  public openTerminal(terminalId: string) {
+  public async openTerminal(terminalId: string) {
     const terminalConnection =
       this._terminalConnectionManagerService.getConnection(terminalId);
-      if(terminalConnection) {
-        this._terminalService.getTerminalHistory(terminalId).subscribe((response) => {
-          const terminalHistory = response.result;
-          const terminalDialog = this._dialog.open(TerminalDialogComponent, {
-            height:'80%',
-            width:'80%',
-            minWidth:400,
-            minHeight:400,
-            data: {
-              terminalId: terminalId,
-              connection: terminalConnection,
-              terminalHistory,
-            },
-          });
-    
-          terminalDialog.afterClosed().subscribe(() => {});
+    if (terminalConnection) {
+      try {
+        const terminalHistory = await this._terminalsStore.getTerminalHistory(
+          terminalId
+        );
+        const terminalDialog = this._dialog.open(TerminalDialogComponent, {
+          height: '80%',
+          width: '80%',
+          minWidth: 400,
+          minHeight: 400,
+          data: {
+            terminalId: terminalId,
+            connection: terminalConnection,
+            terminalHistory,
+          },
         });
+
+        await firstValueFrom(terminalDialog.afterClosed());
+      } catch (error) {
+        console.error(error);
       }
+    }
   }
 
   /**
    *
    * @param terminalId Is the Unique identifier of the terminal
    */
-  public stopTerminal(server: Server, terminalId: string) {
-    this._terminalService.stopTerminal(server, terminalId).subscribe();
+  public async stopTerminal(server: Server, terminalId: string) {
+    return this._terminalsStore.stopTerminal(server.name, terminalId);
   }
 
-  public createTerminal(server: Server) {
+  public async createTerminal(server: Server) {
     const promptDialog = this._dialog.open(TerminalPromptDialogComponent);
-    promptDialog.afterClosed().subscribe((terminalId) => {
-      if(terminalId) {
-        this._terminalService
-        .create(server.name, terminalId)
-        .subscribe({next: (response) => {
-          if (response.result) {
-            const terminalId = Object.keys(response.result)[0];
-            this.openTerminal(terminalId);
-          }
-        }});
+    const proposedTerminalId = await firstValueFrom(promptDialog.afterClosed());
+    if (proposedTerminalId) {
+      const terminalId = await this._terminalsStore.create(
+        server.name,
+        proposedTerminalId
+      );
+      if (terminalId) {
+        this.openTerminal(terminalId);
       }
-    });
+    }
   }
 
   public deleteServer(server: Server) {
-    this._serversService.deleteServer(server.name).subscribe();
+    this._serversStore.deleteServer(server.name);
   }
 }

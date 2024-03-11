@@ -1,18 +1,16 @@
 import { NgClass, NgFor, NgStyle } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Server } from 'src/app/servers/data-access/server';
-import { ServersService } from 'src/app/servers/data-access/servers.service';
-import { StateService } from 'src/app/shared/data-access/state.service';
+import { Server } from 'src/app/servers/data-access/server-types';
+import { ServersStore } from 'src/app/servers/data-access/servers-store';
+import {
+  HistorySignal,
+  historySignal,
+} from 'src/app/shared/utils/history-signal';
 import { ITerminalOptions } from 'xterm';
 import {
   TerminalTailComponent,
   TerminalTailState,
 } from '../terminal-tail/terminal-tail.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  HistorySignal,
-  historySignal,
-} from 'src/app/shared/utils/history-signal';
 
 type Terminal = {
   id: string;
@@ -27,18 +25,14 @@ type Terminal = {
   standalone: true,
   imports: [NgFor, TerminalTailComponent, NgClass, NgStyle],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   public terminalOptions: ITerminalOptions = {
     cursorBlink: true,
     allowProposedApi: true,
     macOptionClickForcesSelection: true,
     macOptionIsMeta: true,
   };
-  private _serversService = inject(ServersService);
-  private _stateService = inject(StateService);
-  private _servers = toSignal(this._stateService.servers$, {
-    initialValue: [],
-  });
+  private _servers = inject(ServersStore).servers;
   public terminals = computed(() => {
     const terminalsData = new Map<string, Terminal>();
     for (const server of this._servers()) {
@@ -56,10 +50,6 @@ export class DashboardComponent implements OnInit {
   });
 
   public fullscreen = signal<string | undefined>(undefined);
-
-  ngOnInit(): void {
-    this._serversService.getServers().subscribe();
-  }
 
   onTerminalStateChange(terminalId: string, state: TerminalTailState) {
     const targetTerminal = this.terminals().get(terminalId)!;

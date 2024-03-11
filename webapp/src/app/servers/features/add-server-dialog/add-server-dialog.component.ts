@@ -1,13 +1,22 @@
 import { NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { HostnameInputComponent } from 'src/app/servers/ui/hostname-input/hostname-input.component';
-import { Server } from '../../data-access/server';
+import { Server } from '../../data-access/server-types';
 
 export interface ServerDialogData {
   server?: Server;
@@ -34,12 +43,12 @@ export class AddServerDialogComponent {
   private _dialogRef = inject(MatDialogRef<AddServerDialogComponent>);
   serverFormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
-    description: new FormControl('',Validators.required),
+    description: new FormControl('', Validators.required),
     connectionSettings: new FormGroup({
-      host: new FormControl('',Validators.required),
-      port: new FormControl(22,Validators.required),
-      username: new FormControl('',Validators.required),
-      password: new FormControl('',Validators.required),
+      host: new FormControl('', Validators.required),
+      port: new FormControl(22, Validators.required),
+      username: new FormControl('', Validators.required),
+      password: new FormControl('', Validators.required),
       privateKey: new FormControl(''),
       usePKey: new FormControl(false),
     }),
@@ -51,10 +60,10 @@ export class AddServerDialogComponent {
     this.initForm();
   }
 
-  private initForm(){
-    if(this.server) {
+  private initForm() {
+    if (this.server) {
       this.serverFormGroup.patchValue(this.server);
-    } 
+    }
   }
 
   public cancel() {
@@ -62,7 +71,7 @@ export class AddServerDialogComponent {
   }
 
   public save() {
-    if(this.serverFormGroup.invalid) {
+    if (this.serverFormGroup.invalid) {
       return;
     }
     this._dialogRef.close(this.serverFormGroup.value);

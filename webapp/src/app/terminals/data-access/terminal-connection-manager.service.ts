@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from '../../shared/data-access/web-socket.service';
 import { TerminalConnection } from './terminal-connection';
-import { WSTerminalConnection } from '../../shared/data-access/ws-terminal-connection';
+import { WSTerminalConnection } from '../../shared/data-access/models/ws-terminal-connection';
 import { StateService } from '../../shared/data-access/state.service';
 import lodash from 'lodash';
 import { AuthService } from '../../authentication/data-access/auth.service';
 import { NotificationService } from '../../shared/data-access/notification.service';
-import { Server } from '../../servers/data-access/server';
+import { Server } from '../../servers/data-access/server-types';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,7 @@ export class TerminalConnectionManagerService {
 
   /**
    * Executed when a terminal receives the exit message from the server
-   * @param terminalId 
+   * @param terminalId
    */
   private _onTerminalDestroy(terminalId: string) {
     const servers = this._stateService.servers;

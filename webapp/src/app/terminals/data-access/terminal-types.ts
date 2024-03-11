@@ -27,3 +27,7 @@ export interface AddonWrapper<T extends AddonType> {
     instance?: ITerminalAddon;
   }
   
+export interface TerminalsState {
+  terminals: object[];
+  isLoading: boolean;
+}

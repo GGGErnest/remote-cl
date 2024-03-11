@@ -40,9 +40,11 @@ import {
   provideHttpClient,
 } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideAnimationsAsync(),
     importProvidersFrom(
       BrowserModule,
       AppRoutingModule,

@@ -1,19 +1,14 @@
-import {
-  BehaviorSubject,
-  filter,
-  takeWhile,
-  tap,
-} from 'rxjs';
-import { TerminalConnection } from '../../terminals/data-access/terminal-connection';
+import { BehaviorSubject, filter, takeWhile, tap } from 'rxjs';
+import { TerminalConnection } from '../../../terminals/data-access/terminal-connection';
 import {
   WSInputMessage,
   WSMessage,
   WSOutMessage,
   WSTerminalResizeMessage,
 } from './ws-types';
-import { WebSocketService } from './web-socket.service';
-import { AuthService } from '../../authentication/data-access/auth.service';
-import { NotificationService } from './notification.service';
+import { WebSocketService } from '../web-socket.service';
+import { AuthService } from '../../../authentication/data-access/auth.service';
+import { NotificationService } from '../notification.service';
 
 export class WSTerminalConnection implements TerminalConnection {
   private _output = new BehaviorSubject<string | undefined>(undefined);

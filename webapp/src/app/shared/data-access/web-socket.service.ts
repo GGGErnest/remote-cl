@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
@@ -6,7 +6,7 @@ import {
   WSInputMessage,
   WSMessage,
   WSState,
-} from './ws-types';
+} from './models/ws-types';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../authentication/data-access/auth.service';
 import { NotificationService } from './notification.service';
@@ -18,14 +18,11 @@ export class WebSocketService {
   private _state = new BehaviorSubject<WSState>('Disconnected');
   private _socket?: WebSocket;
   private _messageReceived = new Subject<WSMessage>();
+  private readonly _authService = inject(AuthService);
+  private readonly _notificationService = inject(NotificationService);
 
   public messages = this._messageReceived.asObservable();
   state$ = this._state.asObservable();
-
-  constructor(
-    private readonly _authService: AuthService,
-    private _notificationService: NotificationService
-  ) {}
 
   public get state(): WSState {
     return this._state.value;

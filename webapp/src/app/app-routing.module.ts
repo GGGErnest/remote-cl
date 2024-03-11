@@ -8,15 +8,27 @@ import { serversResolver } from './servers/data-access/servers.resolver';
 import { ServersListComponent } from './servers/features/servers-list/servers-list.component';
 
 const routes: Routes = [
-  { path: 'dashboard', title:'Dashboard' , component: DashboardRouteComponent, canActivate: [canActivate] },
-  { path: 'servers', title:'Servers', component: ServersListComponent, canActivate: [canActivate], resolve:{servers: serversResolver}},
+  {
+    path: 'dashboard',
+    title: 'Dashboard',
+    component: DashboardRouteComponent,
+    canActivate: [canActivate],
+    resolve: { servers: serversResolver },
+  },
+  {
+    path: 'servers',
+    title: 'Servers',
+    component: ServersListComponent,
+    canActivate: [canActivate],
+    resolve: { servers: serversResolver },
+  },
   { path: 'logout', component: LogoutComponent, canActivate: [canActivate] },
-  { path: 'login', title:'Login', component: LoginRouteComponent},
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  { path: 'login', title: 'Login', component: LoginRouteComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -1,8 +1,7 @@
 import { inject } from '@angular/core';
 import type { ResolveFn } from '@angular/router';
-import { ServersService } from './servers.service';
-import { ServersResponse } from './api-types';
+import { ServersStore } from './servers-store';
 
-export const serversResolver: ResolveFn<ServersResponse> = (route, state) => {
-  return inject(ServersService).getServers();
+export const serversResolver: ResolveFn<void> = (route, state) => {
+  return inject(ServersStore).loadAllServers();
 };
